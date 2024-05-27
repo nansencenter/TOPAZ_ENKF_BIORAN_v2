@@ -23,7 +23,8 @@ distribute.F90\
 m_bilincoeff.F90\
 m_get_mod_fld_nc.F90\
 m_get_mod_fld.F90\
-m_get_mod_grid.F90\
+m_get_mod_cnfg.F90\
+m_io_hycom.F90\
 m_get_mod_nrens.F90\
 m_insitu.F90\
 m_local_analysis.F90\
@@ -51,6 +52,7 @@ m_obs.o: m_uobs.o
 m_Generate_element_Si.o: m_parse_blkdat.o mod_measurement.o m_get_mod_fld.o m_insitu.o m_obs.o
 m_insitu.o: nfw.o mod_measurement.o
 m_local_analysis.o: mod_measurement.o m_point2nc.o m_parameters.o
+m_get_mod_cnfg.o: qmpi.o mod_raw_io.o m_io_hycom.o
 
 EnKF: $(ENKF_OBJ)
 	@echo "->EnKF"
@@ -75,4 +77,5 @@ clean:
 
 %.o: %.c
 	@echo "  $*".c
-	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. ../$*.c
+	@cd ./TMP ; mpiicc -c $(CFLAGS) -o $*.o -I.. ../$*.c
+#	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. ../$*.c

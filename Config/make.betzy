@@ -1,14 +1,11 @@
-
 #Compiler -- F90
-#CF90 = mpiifort
-CF90 = mpifort
+CF90 = mpiifort
 
 #Compiler -- F77
 CF77 = $(CF90)
 
 # Compiler -- C
-#CC=mpiicc
-CC=mpicc
+CC=mpiicc
 
 #Linker 
 LD =  $(CF90)

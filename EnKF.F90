@@ -47,7 +47,7 @@ program EnKF
   use m_parameters
   use distribute
   use mod_measurement
-  use m_get_mod_grid
+  use m_get_mod_cnfg
   use m_get_mod_nrens
   use m_obs
   use m_local_analysis
@@ -147,9 +147,9 @@ program EnKF
    allocate(depths(idm, jdm))
    allocate(nlobs_array(idm, jdm))
 
-   ! get model grid
+   ! get model configurations
    !
-   call get_mod_grid(modlon, modlat, depths, mindx, meandx, idm, jdm)
+   call get_mod_cnfg(modlon, modlat, depths, mindx, meandx, idm, jdm, .false.)
 
    ! set a variable random seed
    !
