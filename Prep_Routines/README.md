@@ -1,6 +1,7 @@
 ## Unit list of ECOSMO state variables for assimilation
 
 
+|-----------|-----------|-----------|--------------------| 
 |parameter  |unit ECOSMO|unit CMEMS |conversion constant | 
 |           |           |           |from ECOSMO to CMEMS|
 |-----------|-----------|-----------|--------------------| 
