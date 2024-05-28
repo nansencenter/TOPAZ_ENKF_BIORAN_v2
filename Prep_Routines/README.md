@@ -17,16 +17,16 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 
 |parameter  |unit ECOSMO|unit CMEMS |conversion factor   | 
 |-----------|-----------|-----------|--------------------| 
-|ECO_diac   |mg m-3     |mg m-3     |                    |  
-|ECO_flac   |mg m-3     |mg m-3     |                    |
-|ECO_cclc   |mg m-3     |mg m-3     |                    |
-|ECO_dia    |mg C m-3   |mmole C m-3|                    |
-|ECO_fla    |mg C m-3   |mmole C m-3|                    |
-|ECO_ccl    |mg C m-3   |mmole C m-3|                    |
-|ECO_micr   |mg C m-3   |mmole C m-3|                    |
-|ECO_meso   |mg C m-3   |mmole C m-3|                    |
-|ECO_oxy    |mmol m-3   |mmole m-3  |                    |
-|ECO_no3    |mg C m-3   |mole m-3   |                    |
-|ECO_sil    |mg C m-3   |mole m-3   |                    |
-|ECO_pho    |mg C m-3   |mole m-3   |                    | 
+|ECO_diac   |mg Chl m-3 |mg Chl m-3 |`1.0`               |  
+|ECO_flac   |mg Chl m-3 |mg Chl m-3 |`1.0`               |
+|ECO_cclc   |mg Chl m-3 |mg Chl m-3 |`1.0`               |
+|ECO_dia    |mg C m-3   |mmole C m-3|`/ccar`             |
+|ECO_fla    |mg C m-3   |mmole C m-3|`/ccar`             |
+|ECO_ccl    |mg C m-3   |mmole C m-3|`/ccar`             |
+|ECO_micr   |mg C m-3   |mmole C m-3|`/ccar`             |
+|ECO_meso   |mg C m-3   |mmole C m-3|`/ccar`             |
+|ECO_oxy    |mmol m-3   |mmole m-3  |`1.0`               |
+|ECO_no3    |mg C m-3   |mole m-3   |`/ccar/C2NIT`       |
+|ECO_sil    |mg C m-3   |mole m-3   |`/ccar/C2SIL`       |
+|ECO_pho    |mg C m-3   |mole m-3   |`/ccar/C2PHO`       | 
 
