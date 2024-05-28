@@ -3,7 +3,6 @@
 
 |-----------|-----------|-----------|--------------------| 
 |parameter  |unit ECOSMO|unit CMEMS |conversion constant | 
-|           |           |           |from ECOSMO to CMEMS|
 |-----------|-----------|-----------|--------------------| 
 |ECO_diac   |mg m-3     |mg m-3     |                    |  
 |ECO_flac   |mg m-3     |mg m-3     |                    |
@@ -17,3 +16,4 @@
 |ECO_no3    |mmole m-3  |mg m-3     |                    |
 |ECO_sil    |mmole m-3  |mg m-3     |                    |
 |ECO_pho    |mmole m-3  |mg m-3     |                    | 
+|-----------|-----------|-----------|--------------------| 
