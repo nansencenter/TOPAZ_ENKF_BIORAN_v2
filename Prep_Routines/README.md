@@ -11,6 +11,8 @@
 |C_P   |106.0   |Redfield ratio|[mmol_C/mmol_P] |
 |C_Cmg |12.01   |Transfer unit |[mg_C/mmol_C]   |
 
+Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:16:16:1) is known as the Redfield ratio. 
+
 ## Unit list of ECOSMO state variables for assimilation
 
 |parameter  |unit ECOSMO|unit CMEMS |conversion factor   | 
