@@ -20,13 +20,13 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 |ECO_diac   |mg m-3     |mg m-3     |                    |  
 |ECO_flac   |mg m-3     |mg m-3     |                    |
 |ECO_cclc   |mg m-3     |mg m-3     |                    |
-|ECO_dia    |mmole C m-3|mg m-3     |                    |
-|ECO_fla    |mmole C m-3|mg m-3     |                    |
-|ECO_ccl    |mmole C m-3|mg m-3     |                    |
-|ECO_micr   |mmole C m-3|mg m-3     |                    |
-|ECO_meso   |mmole C m-3|mg m-3     |                    |
-|ECO_oxy    |mmole m-3  |mg m-3     |                    |
-|ECO_no3    |mmole m-3  |mg m-3     |                    |
-|ECO_sil    |mmole m-3  |mg m-3     |                    |
-|ECO_pho    |mmole m-3  |mg m-3     |                    | 
+|ECO_dia    |mg C m-3   |mmole C m-3|                    |
+|ECO_fla    |mg C m-3   |mmole C m-3|                    |
+|ECO_ccl    |mg C m-3   |mmole C m-3|                    |
+|ECO_micr   |mg C m-3   |mmole C m-3|                    |
+|ECO_meso   |mg C m-3   |mmole C m-3|                    |
+|ECO_oxy    |ml l-3     |ml l-3     |                    |
+|ECO_no3    |mg C m-3   |mole m-3   |                    |
+|ECO_sil    |mg C m-3   |mole m-3   |                    |
+|ECO_pho    |mg C m-3   |mole m-3   |                    | 
 
