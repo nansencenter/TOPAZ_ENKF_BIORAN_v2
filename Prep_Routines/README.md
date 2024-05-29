@@ -21,20 +21,20 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 
 ## Unit list of FABM-ECOSMO state variables for assimilation
 
-|name     |parameter                   |unit HYCOM       |unit CMEMS |conversion factor   | 
-|---------|----------------------------|-----------------|-----------|--------------------| 
-|ECO_diac |Diatom chlorophyll-a        |mg Chl m-3       |mg Chl m-3 |`1.0`               |  
-|ECO_flac |Flagellate chlorophyll-a    |mg Chl m-3       |mg Chl m-3 |`1.0`               |
-|ECO_cclc |Coccolithphoes chlorophyll-a|mg Chl m-3       |mg Chl m-3 |`1.0`               |
-|ECO_dia  |Diatom biomass              |mg C m-3         |mmol C m-3 |`/ccar`             |
-|ECO_fla  |Flagellate biomass          |mg C m-3         |mmol C m-3 |`/ccar`             |
-|ECO_ccl  |Coccolithphoes biomass      |mg C m-3         |mmol C m-3 |`/ccar`             |
-|ECO_micr |Micro Zooplankton biomass   |mg C m-3         |mmol C m-3 |`/ccar`             |
-|ECO_meso |Meso Zooplankton biomass    |mg C m-3         |mmol C m-3 |`/ccar`             |
-|ECO_no3  |Nitrate                     |mg C m-3         |mmol m-3   |`/ccar/C2NIT`       |
-|ECO_sil  |Silicate                    |mg C m-3         |mmol m-3   |`/ccar/C2SIL`       |
-|ECO_pho  |Phosphate                   |mg C m-3         |mmol m-3   |`/ccar/C2PHO`       |
-|ECO_oxy  |Dissolved oxygen            |mmol m-3         |mmol m-3   |`1.0`               |
-|CO2_c    |Dissolved Inorganic Carbon  |mmol m-3         |mole m-3   |`/1000.0`           |
-|CO2_pH   |pH of sea water             |non              |non        |`1.0`               |
-|CO2_pCO2 |partial pressure CO2        |umol mol-1 (ppm) |Pa         |`/10.1325`          |
+|name     |parameter                   |unit HYCOM         |unit CMEMS         |conversion factor   | 
+|---------|----------------------------|-------------------|-------------------|--------------------| 
+|ECO_diac |Diatom chlorophyll-a        |mg Chl m-3         |mg Chl m-3         |`1.0`               |  
+|ECO_flac |Flagellate chlorophyll-a    |mg Chl m-3         |mg Chl m-3         |`1.0`               |
+|ECO_cclc |Coccolithphoes chlorophyll-a|mg Chl m-3         |mg Chl m-3         |`1.0`               |
+|ECO_dia  |Diatom biomass              |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_fla  |Flagellate biomass          |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_ccl  |Coccolithphoes biomass      |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_micr |Micro Zooplankton biomass   |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_meso |Meso Zooplankton biomass    |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_no3  |Nitrate                     |mg C m-3           |mmol m-3           |`/ccar/C2NIT`       |
+|ECO_sil  |Silicate                    |mg C m-3           |mmol m-3           |`/ccar/C2SIL`       |
+|ECO_pho  |Phosphate                   |mg C m-3           |mmol m-3           |`/ccar/C2PHO`       |
+|ECO_oxy  |Dissolved oxygen            |mmol m-3 (umol L-1)|mmol m-3 (umol L-1)|`1.0`               |
+|CO2_c    |Dissolved Inorganic Carbon  |mmol m-3           |mole m-3           |`/1000.0`           |
+|CO2_pH   |pH of sea water             |non                |non                |`1.0`               |
+|CO2_pCO2 |partial pressure CO2        |umol mol-1 (ppm)   |Pa                 |`/10.1325`          |
