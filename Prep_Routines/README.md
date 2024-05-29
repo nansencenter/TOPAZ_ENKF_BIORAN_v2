@@ -23,11 +23,19 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 
 ### Conversion factors from observation to HYCOM daily/restart
 
+Listed are the conversion factors used in:
 
+```bash
+Prep_Routines/
+   
+```
+
+for matching observed variable unit to HYCOM restart data unit. 
 
 ### Conversion factors from HYCOM daily/restart to CMEMS
 
-The conversion factors are used in:
+Listed are the conversion factors used in:
+
 ```bash
 MSCPROGS/
   src/
@@ -35,6 +43,8 @@ MSCPROGS/
        p_hyc2proj.F90
        m_bio_conversions.F90
 ```
+
+for CMEMS products dissemination.
 
 |name     |parameter                   |unit HYCOM         |unit CMEMS         |conversion factor   | 
 |---------|----------------------------|-------------------|-------------------|--------------------| 
