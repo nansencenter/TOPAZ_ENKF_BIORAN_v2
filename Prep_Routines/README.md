@@ -56,10 +56,10 @@ for CMEMS products dissemination.
 |ECO_ccl  |Coccolithophores biomass    |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_micr |Micro Zooplankton biomass   |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_meso |Meso Zooplankton biomass    |mg C m-3           |mmol C m-3         |`/ccar`             |
-|ECO_no3  |Nitrate                     |mg C m-3           |mmol m-3           |`/ccar/C2NIT`       |
-|ECO_sil  |Silicate                    |mg C m-3           |mmol m-3           |`/ccar/C2SIL`       |
-|ECO_pho  |Phosphate                   |mg C m-3           |mmol m-3           |`/ccar/C2PHO`       |
+|ECO_no3  |Nitrate                     |mg C m-3           |mmol N m-3         |`/ccar/C2NIT`       |
+|ECO_sil  |Silicate                    |mg C m-3           |mmol S m-3         |`/ccar/C2SIL`       |
+|ECO_pho  |Phosphate                   |mg C m-3           |mmol P m-3         |`/ccar/C2PHO`       |
 |ECO_oxy  |Dissolved oxygen            |mmol m-3 (umol L-1)|mmol m-3 (umol L-1)|`1.0`               |
-|CO2_c    |Dissolved Inorganic Carbon  |mmol m-3           |mole m-3           |`/1000.0`           |
+|CO2_c    |Dissolved Inorganic Carbon  |mmol m-3 (umol L-1)|mole m-3 (umol L-1)|`/1000.0`           |
 |CO2_pH   |pH of sea water             |non                |non                |`1.0`               |
 |CO2_pCO2 |partial pressure CO2        |umol mol-1 (ppm)   |Pa                 |`/10.1325`          |
