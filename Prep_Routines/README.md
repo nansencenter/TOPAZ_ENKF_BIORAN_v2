@@ -29,6 +29,7 @@ MSCPROGS/
   src/
     Hyc2proj/
        p_hyc2proj.F90
+       m_bio_conversions.F90
 ```
 
 |name     |parameter                   |unit HYCOM         |unit CMEMS         |conversion factor   | 
