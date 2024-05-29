@@ -28,7 +28,7 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 |ECO_cclc |Coccolithophores Chl-a      |mg Chl m-3         |mg Chl m-3         |`1.0`               |
 |ECO_dia  |Diatom biomass              |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_fla  |Flagellate biomass          |mg C m-3           |mmol C m-3         |`/ccar`             |
-|ECO_ccl  |Coccolithphoes biomass      |mg C m-3           |mmol C m-3         |`/ccar`             |
+|ECO_ccl  |Coccolithophores biomass    |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_micr |Micro Zooplankton biomass   |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_meso |Meso Zooplankton biomass    |mg C m-3           |mmol C m-3         |`/ccar`             |
 |ECO_no3  |Nitrate                     |mg C m-3           |mmol m-3           |`/ccar/C2NIT`       |
