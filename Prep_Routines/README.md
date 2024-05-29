@@ -21,6 +21,10 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 
 ## Unit list of FABM-ECOSMO state variables for assimilation
 
+### Conversion factors from observation to HYCOM daily/restart
+
+
+
 ### Conversion factors from HYCOM daily/restart to CMEMS
 
 The conversion factors are used in:
