@@ -6,9 +6,7 @@
 
 - [NEMO-ERSEM and POLCOMS-ERSEM: User Guides](https://confluence.ecmwf.int/pages/viewpage.action?pageId=283550184)
 
-## Constants from [TEOS 10](https://repository.oceanbestpractices.org/bitstream/handle/11329/286/TEOS-10_Manual.pdf?sequence=1&isAllowed=y)
-
-
+- [TEOS 10](https://repository.oceanbestpractices.org/bitstream/handle/11329/286/TEOS-10_Manual.pdf?sequence=1&isAllowed=y)
 
 ## Unit conversion factors
 
