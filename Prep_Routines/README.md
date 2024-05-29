@@ -1,10 +1,10 @@
 ## Useful links
 
-[ICES unit conversions](https://www.ices.dk/data/tools/Pages/Unit-conversions.aspx)
+- [ICES unit conversions](https://www.ices.dk/data/tools/Pages/Unit-conversions.aspx)
 
-[Units for Carbon Dioxide Concentrations and Emissions](https://acsess.onlinelibrary.wiley.com/doi/pdfdirect/10.2134/asaspecpub53.appendix2)
+- [Units for Carbon Dioxide Concentrations and Emissions](https://acsess.onlinelibrary.wiley.com/doi/pdfdirect/10.2134/asaspecpub53.appendix2)
 
-[NEMO-ERSEM and POLCOMS-ERSEM: User Guides](https://confluence.ecmwf.int/pages/viewpage.action?pageId=283550184)
+- [NEMO-ERSEM and POLCOMS-ERSEM: User Guides](https://confluence.ecmwf.int/pages/viewpage.action?pageId=283550184)
 
 ## Constants from [TEOS 10](https://repository.oceanbestpractices.org/bitstream/handle/11329/286/TEOS-10_Manual.pdf?sequence=1&isAllowed=y)
 
