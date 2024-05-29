@@ -21,6 +21,16 @@ Note: The constant elemental stoichiometry of phytoplankton (C:N:Si:P = 106:
 
 ## Unit list of FABM-ECOSMO state variables for assimilation
 
+### Conversion factors from HYCOM daily/restart to CMEMS
+
+The conversion factors are used in:
+```bash
+MSCPROGS/
+  src/
+    Hyc2proj/
+       p_hyc2proj.F90
+```
+
 |name     |parameter                   |unit HYCOM         |unit CMEMS         |conversion factor   | 
 |---------|----------------------------|-------------------|-------------------|--------------------| 
 |ECO_diac |Diatom chlorophyll-a (Chl-a)|mg Chl m-3         |mg Chl m-3         |`1.0`               |  
