@@ -24,7 +24,6 @@ m_read_OSISAF_data.F90\
 m_read_CLS_SLA.F90\
 m_read_CLS_TSLA.F90\
 m_read_MET_SST.F90\
-m_read_HYCOM_SST.F90\
 m_read_CLS_SSH.F90\
 m_read_CLS_SST.F90\
 m_read_CLS_SST_grid.F90\
