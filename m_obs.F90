@@ -90,6 +90,8 @@ module m_obs
   real, parameter, private :: HICE_MAX = 5.99d0
   real, parameter, private :: SKIM_MIN = -2.0d5
   real, parameter, private :: SKIM_MAX = 2.0d5
+  real, parameter, private :: CHL_MIN =  0.0d0
+  real, parameter, private :: CHL_MAX = 20.0d0
 
   private obs_prepareuobs, obs_realloc
 
@@ -202,6 +204,11 @@ contains
           ! The type can be DX1,DX2,..,DX5,DY1,..DY5
           dmin = UVICE_MIN
           dmax = UVICE_MAX
+       elseif (trim(unique_obs(uo)) == 'CHL'  &
+          .or. trim(unique_obs(uo)) == 'SCHL' &
+          .or. trim(unique_obs(uo)) == 'GCHL') then
+          dmin = CHL_MIN
+          dmax = CHL_MAX
        else
           dmin = -1.0d6
           dmax = 1.0d6

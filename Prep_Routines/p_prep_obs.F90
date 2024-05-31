@@ -45,6 +45,7 @@ program p_prep_obs
   use m_get_def_wet_point
   use m_write_wet_file
   use m_get_mod_grid
+  use m_get_mod_cnfg
   use m_parse_blkdat
   use m_read_amsr_norsex
   use m_superobs
@@ -157,6 +158,7 @@ program p_prep_obs
         allocate(data(grpoints))
         allocate(obs(maxobs))
         call read_MET_SST(fname, gr, data)
+        data_eq_obs = .true.   ! [2024.05.31] temporal solution for now
      else
         stop 'ERROR: OSTIA (MET) only produces SST'
      endif
@@ -366,7 +368,10 @@ program p_prep_obs
 
   ! Read position and depth from model grid
   !
-  call  get_mod_grid(modlon, modlat, depths, mindx, meandx, nx, ny)
+  !call  get_mod_grid(modlon, modlat, depths, mindx, meandx, nx, ny)
+
+  ! Read model grid and depth from regional.depth.(a,b) and regional.grid.(a,b)  
+  call get_mod_cnfg(modlon, modlat, depths, mindx, meandx, nx, ny, .false.)
 
   if (.not. data_eq_obs) then
      ! Compute bilinear coefficients

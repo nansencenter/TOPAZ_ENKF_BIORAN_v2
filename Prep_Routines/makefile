@@ -24,6 +24,7 @@ m_read_OSISAF_data.F90\
 m_read_CLS_SLA.F90\
 m_read_CLS_TSLA.F90\
 m_read_MET_SST.F90\
+m_read_HYCOM_SST.F90\
 m_read_CLS_SSH.F90\
 m_read_CLS_SST.F90\
 m_read_CLS_SST_grid.F90\
@@ -50,6 +51,8 @@ mod_measurement.F90\
 m_spherdist.F90\
 m_parse_blkdat.F90\
 m_get_mod_grid.F90\
+m_get_mod_cnfg.F90\
+m_io_hycom.F90\
 p_prep_obs.F90
 
 CHK_OBS_SRC_F90 = $(CHK_SRC_F90)\
@@ -67,6 +70,7 @@ CHK_OBS_OBJ = $(CHK_OBS_SRC_F90:.F90=.o) $(PREP_OBS_SRC_C:.c=.o) $(PREP_OBS_SRC_
 m_bilincoeff.o: m_oldtonew.o
 m_get_def_wet_point.o: m_pivotp.o m_confmap.o m_spherdist.o mod_measurement.o mod_grid.o
 m_get_mod_grid.o: mod_raw_io.o
+m_get_mod_cnfg.o: mod_raw_io.o m_io_hycom.o
 m_read_CERSAT_data.o: nfw.o
 m_read_CLS_TSLA.o: nfw.o
 m_read_MYO_TSLA.o: nfw.o
@@ -84,7 +88,7 @@ $(PROGS): $(PREP_OBS_OBJ)
 $(PREP_OBS_OBJ): makefile make.inc MODEL.CPP
 
 clean:
-	@rm -f TMP/*.f  TMP/*.o TMP/*.f90 TMP/*.h TMP/*.mod $(PROGS)
+	@rm -f TMP/*.f  TMP/*.o TMP/*.f90 TMP/*.h TMP/*.mod $(PROGS) $(CHK_OBS)
 
 %.o: %.F90
 	@echo "  $*".F90

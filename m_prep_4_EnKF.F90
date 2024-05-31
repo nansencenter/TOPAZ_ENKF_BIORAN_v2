@@ -324,10 +324,13 @@ contains
              end if
           end do
 
-       elseif (trim(unique_obs(iuobs)) == 'SAL' .or.&
-            trim(unique_obs(iuobs)) == 'TEM' .or.&
-            trim(unique_obs(iuobs)) == 'GSAL' .or.&
-            trim(unique_obs(iuobs)) == 'GTEM') then
+       elseif (trim(unique_obs(iuobs)) == 'SAL'  .or. &
+               trim(unique_obs(iuobs)) == 'TEM'  .or. &
+               trim(unique_obs(iuobs)) == 'CHL'  .or. &
+               trim(unique_obs(iuobs)) == 'GSAL' .or. &
+               trim(unique_obs(iuobs)) == 'GTEM' .or. &
+               trim(unique_obs(iuobs)) == 'GCHL' .or. &
+              ) then
 
           if (master) then
              print *, '  Interpolating ensemble vectors to the locations of "',&

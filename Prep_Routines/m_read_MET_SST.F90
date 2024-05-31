@@ -31,6 +31,7 @@ contains
 #else
     real, parameter :: Lscale = 8  ! enlarge times default used after 2018 
 #endif
+    real*8, dimension(1) :: scale_factor
     ! filen name
     logical         :: ex
 
@@ -45,7 +46,7 @@ contains
        allocate(lon(gr%nx), lat(gr%ny), sst(gr%nx,gr%ny), std(gr%nx, gr%ny), mask(gr%nx, gr%ny))
 
        ! Variable ids in netcdf file
-       call nfw_inq_varid(filename, ncid, 'lat', lat_ID)
+       call nfw_inq_varid(filename, ncid,'lat', lat_ID)
        call nfw_inq_varid(filename, ncid,'lon', lon_ID)
        call nfw_inq_varid(filename, ncid,'analysed_sst' ,vsst_ID)
 #if defined (CCI_SST)
@@ -61,6 +62,9 @@ contains
        call nfw_get_att_double(filename, ncid, vsst_ID, '_FillValue', undef_sst(1))
        gr % undef = undef_sst(1)
        
+       ! Variable scale_factor attributes
+       call nfw_get_att_double(filename, ncid, vsst_ID, 'scale_factor', scale_factor(1))
+
        ! actual variable values (for dimensions of var -- see ncdump, or improve this program)
        ! NB: note that index dimensions are different between fortran and C internals. 
        ! "ncdump" gives C internals.
@@ -88,14 +92,16 @@ contains
                      sst(i,j) < 4500 .and. &
                      std(i,j) > 0.0) then
                    data(count1)%id = 'SST'
-                   data(count1)%d = sst(i,j)*0.01  
+                   !data(count1)%d = sst(i,j)*0.01  
+                   data(count1)%d = sst(i,j)*scale_factor(1)
                    data(count1)%ipiv = count1 !whatever it is filled afterwards
                    data(count1)%jpiv = 1   !whaterver it is filled afterwards
                    data(count1)%lat=lat(j)
                    data(count1)%lon=lon(i)
                    data(count1)%a1 = spherdist(real(lon(i))-.5*gr%dx,real(lat(j))-.5*gr%dy,real(lon(i))+.5*gr%dx,real(lat(j))+.5*gr%dy)
                    data(count1)%ns = 1 ! 1 for data with a spatial extent
-                   data(count1)%var = (std(i,j) * 0.01 * Lscale) ** 2 ! Exaggerate, factor 8
+                   !data(count1)%var = (std(i,j) * 0.01 * Lscale) ** 2 ! Exaggerate, factor 8
+                   data(count1)%var = (std(i,j) * scale_factor(1) * Lscale) ** 2 ! Exaggerate, factor 8
                    data(count1)%date = 0
                    data(count1)%depth = 0.0
                    data(count1)%status = .true.
