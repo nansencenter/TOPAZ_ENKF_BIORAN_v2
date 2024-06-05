@@ -24,6 +24,9 @@
 program p_prep_obs
   use mod_measurement
   use mod_grid
+  use m_read_CMEMS_grid
+  use m_read_CMEMS_SST
+  use m_read_CMEMS_SCHL
   use m_read_CLS_header
   use m_read_CLS_data
   use m_read_CLS_SST_grid
@@ -147,6 +150,27 @@ program p_prep_obs
         print*, 'Reynolds- ', obstype, ' data has been scaled by a factor = ', factor  
      else
         stop 'ERROR: Reynolds only produce SST'
+     endif
+
+  else if (trim(Producer) == 'CMEMS') then
+
+     dosuperob = .true.
+     data_eq_obs = .true.
+
+     if (trim(obstype) == 'SST') then
+        call read_CMEMS_grid(fnamehdr, gr)
+        grpoints = gr % nx * gr % ny
+        allocate(data(grpoints))
+
+        call read_CMEMS_SST(fname, gr, data)
+     else if (trim(obstype) == 'SCHL') then
+        call read_CMEMS_grid(fnamehdr, gr)
+        grpoints = gr % nx * gr % ny
+        allocate(data(grpoints))
+
+        call read_CMEMS_SCHL(fname, gr, data)
+     else
+        stop 'ERROR: CMEMS only produces SST or SCHL'
      endif
 
   else if (trim(Producer) == 'MET') then
