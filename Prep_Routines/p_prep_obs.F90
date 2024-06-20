@@ -20,6 +20,7 @@
 !                02/09/2008 - Pavel Sakov added superobing for SST and SLA data
 !                17/08/2010 PS - turned (3D) superobing on for Argo obs
 !                09/11/2012 Geir Arne Waagbo: Added support for OSISAF ice drift obs
+!                12/06/2024 TW: 
 
 program p_prep_obs
   use mod_measurement
@@ -154,20 +155,19 @@ program p_prep_obs
 
   else if (trim(Producer) == 'CMEMS') then
 
-     dosuperob = .true.
-     data_eq_obs = .true.
-
      if (trim(obstype) == 'SST') then
+        dosuperob = .true.
         call read_CMEMS_grid(fnamehdr, gr)
         grpoints = gr % nx * gr % ny
         allocate(data(grpoints))
-
+        allocate(obs(maxobs))
         call read_CMEMS_SST(fname, gr, data)
      else if (trim(obstype) == 'SCHL') then
+        dosuperob = .true.
         call read_CMEMS_grid(fnamehdr, gr)
         grpoints = gr % nx * gr % ny
         allocate(data(grpoints))
-
+        allocate(obs(maxobs))
         call read_CMEMS_SCHL(fname, gr, data)
      else
         stop 'ERROR: CMEMS only produces SST or SCHL'
@@ -182,7 +182,6 @@ program p_prep_obs
         allocate(data(grpoints))
         allocate(obs(maxobs))
         call read_MET_SST(fname, gr, data)
-        data_eq_obs = .true.   ! [2024.05.31] temporal solution for now
      else
         stop 'ERROR: OSTIA (MET) only produces SST'
      endif

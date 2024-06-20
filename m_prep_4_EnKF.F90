@@ -255,8 +255,7 @@ contains
                   readfld, depths, nx, ny, nz, 0) 
           end do
 
-       elseif (trim(unique_obs(iuobs)) == 'SLA' .or.&
-            trim(unique_obs(iuobs)) == 'TSLA') then
+       elseif (trim(unique_obs(iuobs)) == 'SLA' .or. trim(unique_obs(iuobs)) == 'TSLA') then
 
           if (trim(unique_obs(iuobs)) == 'TSLA') then
              call read_mean_ssh(field2, nx, ny)
@@ -304,8 +303,7 @@ contains
                    readfld = readfld - field3 ! mean SSH bias for this member
                 end if
 
-                if (trim(unique_obs(iuobs)) == 'TSLA' .or. &
-                       trim(unique_obs(iuobs)) == 'SLA') then
+                if (trim(unique_obs(iuobs)) == 'TSLA' .or. trim(unique_obs(iuobs)) == 'SLA') then
                    !readfld = (readfld - field2)/onem ! mean SSH
                    readfld = readfld - field2         ! mean SSH
                 end if

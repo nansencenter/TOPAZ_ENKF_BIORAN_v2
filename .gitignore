@@ -1,7 +1,10 @@
 Prep_Fram
 core.*
 EnKF
+EnKF_*
 TMP
 *.swp
 *.swo
 *~
+Prep_Routines/chk_obs
+Prep_Routines/prep_obs

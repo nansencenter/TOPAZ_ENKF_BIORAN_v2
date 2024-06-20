@@ -1,6 +1,15 @@
 ! Bilinear coeffisients are calculated witin this program for all the 
 ! observation points.
 ! Only wet points are stored in the observation.uf file
+!
+! History:
+!   - 12/06/2024 TW: Wet point detection is based on depths rather than meanssh
+!              TODO: activate the commented out line
+!
+!                    !call read_mean_ssh(mean_ssh, nx, ny, lmask)
+!
+!                    only for SLA data    
+!
 
 module m_get_def_wet_point
 
@@ -9,10 +18,15 @@ module m_get_def_wet_point
   integer, parameter, private :: STRLEN = 512
   character(STRLEN), parameter, private :: MEANSSHFNAME = "meanssh.uf"
   
-  private read_mean_ssh
   private land_nearby
+  private get_landmask
 
 contains 
+
+  logical function iszero(x)
+    integer, intent(in) :: x
+    iszero = (x == 0)
+  end function iszero
 
   subroutine get_def_wet_point(obs, data, gr, depths, modlat, modlon, nrobs, nx, ny)
     ! Program converts to a general format readable by ENKF (observations.uf)
@@ -34,7 +48,7 @@ contains
     integer, parameter :: maxobs = 1441 * 760 !2*400*600 ! maximum number of observations
 
     real,   dimension(nx, ny) :: mean_ssh
-    integer,dimension(nx, ny) :: SSHmask 
+    integer,dimension(nx, ny) :: lmask 
     integer k, imin, imax, jmin, jmax
     integer ipiv, jpiv, nsupport, nsmin, nsmax
     real :: x0, y0
@@ -57,38 +71,46 @@ contains
     !Put the data into the obs data structture
     !Compute bilinear coefficients
     print *, 'test: ',gridpoints(gr), ' !!'
-    call read_mean_ssh(mean_ssh, nx, ny,SSHmask)
-
+    call get_landmask(depths, nx, ny, lmask)
 
     do k = 1, gridpoints(gr)
        if (data(k) % id .eq. 'SLA' .or. data(k) % id .eq. 'sla' .or. &
-            data(k) % id.eq. 'SSH' .or. data(k)%id .eq. 'ssh' .or.&
-            data(k)%id.eq.'TSLA') then
+           data(k) % id .eq. 'SSH' .or. data(k) % id .eq. 'ssh' .or. &
+           data(k) % id .eq. 'SCHL' .or. &
+           data(k) % id .eq. 'CHL' .or. &
+           data(k) % id .eq. 'TSLA') then
           wetsill = 200.   ! Discarding data in shallow waters
        else
           wetsill=10.
        endif
+
        call oldtonew(data(k) % lat, data(k) % lon, y0, x0)
        call pivotp(x0, y0, ipiv, jpiv)
+
        ! Discard obs on model boundaries (TODO: cyclic domains) 
        ! Also valid if ns=0 
        imin = ipiv - data(k) % ns
        imax = ipiv + data(k) % ns + 1 
        jmin = jpiv - data(k) % ns
        jmax = jpiv + data(k) % ns + 1
-       if ((imin .le. 0) .or. (jmin .le. 0) .or. (imax .ge. nx) .or. &
-            (jmax .ge. ny)) cycle
+       if ((imin .le. 0) .or. (jmin .le. 0) .or. (imax .ge. nx) .or. (jmax .ge. ny)) cycle
+
        ! Is observation surrounded by wet grid points?
        if (any(depths(imin:imax, jmin:jmax) < wetsill .or. depths(imin:imax, jmin:jmax) == depths(imin:imax, jmin:jmax) + 1.0)) cycle
+
        wet = data(k) % status ! Discards inconsistent/Fill values
-       if (data(k) % id .eq. 'SLA' .or. data(k) % id .eq. 'sla' .or.&
-            data(k) % id .eq. 'TSLA') then
+
+       if (data(k) % id .eq. 'SLA'  .or. data(k) % id .eq. 'sla' .or.&
+           data(k) % id .eq. 'SCHL' .or. &
+           data(k) % id .eq. 'CHL'  .or. &
+           data(k) % id .eq. 'TSLA') then
           wet = wet .and. .not. land_nearby(nx, ny, depths, modlon, modlat,&
                ipiv, jpiv, data(k) % lon, data(k) % lat,50000.0).and. &
-               .not. isnan(mean_ssh(ipiv,jpiv))
-          wet = wet .and. .not. filter_meanssh(nx,ny,depths,SSHmask,ipiv,jpiv)
+               .not. iszero(lmask(ipiv,jpiv))
+          wet = wet .and. .not. filter_meanssh(nx,ny,depths,lmask,ipiv,jpiv)
           wet = wet .and. data(k)%lat<85.0
        endif
+
        if (data(k) % id .eq. 'HICE') then
           wet = wet .and. .not. land_nearby(nx, ny, depths, modlon, modlat,&
                ipiv, jpiv, data(k) % lon, data(k) % lat,30000.0)
@@ -125,28 +147,14 @@ contains
          'km, min grid diagonal: ', 0.001 * mingridsize, ' km' 
   end subroutine get_def_wet_point
 
+  subroutine get_landmask(depths, nx, ny, lmask)
+    integer, intent(in)  :: nx, ny
+    real,    intent(in)  :: depths(nx, ny)
+    integer, intent(out) :: lmask(nx, ny)
 
-  subroutine read_mean_ssh(mean_ssh, nx, ny,Imask)
-    integer, intent(in) :: nx, ny
-    real,    intent(out):: mean_ssh(nx, ny)
-    integer,  intent(out):: Imask(nx, ny)
-    logical :: exists
-
-    inquire(file = trim(MEANSSHFNAME), exist = exists)
-    if (.not. exists) then
-       print *,'ERROR: read_mean_ssh(): file "', trim(MEANSSHFNAME), '" not found'
-       stop
-    end if
-       
-    open (10, file = trim(MEANSSHFNAME), status = 'unknown',form = 'unformatted')
-    read (10) mean_ssh
-    close (10)
-    Imask=0
-    where (abs(mean_ssh)<3)
-        Imask=1
-    end where
-  end subroutine read_mean_ssh
-
+    !-- Generate land mask (0:land, 1:ocean)
+    lmask = INT2(depths)
+  end subroutine get_landmask
 
   logical function land_nearby(nx, ny, depths, modlon, modlat, ipiv, jpiv, obslon, obslat,Vdis)
     use m_spherdist

@@ -40,7 +40,6 @@ contains
           call nfw_get_var_double(filename, ncid, lat_ID, lat)
           call nfw_close(filename, ncid)
 
-
           gr%nx=nblon
           gr%ny=nblat
           gr%x0=lon(1)
