@@ -55,7 +55,7 @@ contains
 
        call nfw_inq_varid(filename, ncid,'CHL_uncertainty' ,vstd_ID)
        call nfw_get_var_double(filename, ncid, vstd_ID, std)
-       call nfw_get_att_double(filename, ncid, vdat_ID, 'scale_factor', scale_factor(1))
+       call nfw_get_att_double(filename, ncid, vstd_ID, 'scale_factor', scale_factor(1))
        !
        call nfw_close(filename, ncid)
 
