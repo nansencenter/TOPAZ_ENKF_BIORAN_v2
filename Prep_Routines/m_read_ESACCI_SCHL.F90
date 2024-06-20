@@ -62,7 +62,8 @@ contains
 
        gr % undef = ieee_value(0.0, ieee_quiet_nan)
 
-       mask = (dat == undef_dat(1) .or. std == undef_dat(1) .or. dat > 20.0 ) ! do not assimilate Chla > 20 mg m-3
+       mask = (dat == undef_dat(1) .or. std == undef_dat(1) .or. &
+               dat > 20.0 .or. dat < 0.01 ) ! do not assimilate Chla > 20 mg m-3 and < 0.01 mg m-3
        where (mask)
            dat = gr % undef
            std = gr % undef
