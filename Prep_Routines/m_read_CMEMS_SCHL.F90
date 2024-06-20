@@ -25,10 +25,10 @@ contains
     logical, allocatable :: mask(:,:)
     integer :: ncid ! observations
     real*8, dimension(1) :: undef_dat
+    real*8, dimension(1) :: scale_factor
     real*8 :: nan_value
     integer :: i, j, count1
     real, parameter :: Lscale = 2  !
-    real*8, dimension(1) :: scale_factor
     ! filen name
     logical         :: ex
 
@@ -55,6 +55,7 @@ contains
 
        call nfw_inq_varid(filename, ncid,'CHL_uncertainty' ,vstd_ID)
        call nfw_get_var_double(filename, ncid, vstd_ID, std)
+       call nfw_get_att_double(filename, ncid, vdat_ID, 'scale_factor', scale_factor(1))
        !
        call nfw_close(filename, ncid)
 
@@ -70,7 +71,7 @@ contains
 
        ! convert percentage to std
 
-       std = 0.01*std*abs(dat) ! error info is given by %
+       std = 0.01*std*scale_factor(1)*abs(dat) ! error info is given by %
 
        ! mask for valud data grids
        mask = .not. ieee_is_nan(dat)
