@@ -68,7 +68,7 @@ contains
            std = gr % undef
        end where
 
-       ! convert log10 std to linear std
+       ! convert percentage to std
 
        std = 0.01*std*abs(dat) ! error info is given by %
 
