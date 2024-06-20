@@ -19,6 +19,9 @@ m_nf90_err.F90\
 m_oldtonew.F90\
 m_pivotp.F90\
 m_rk2.F90\
+m_read_ESACCI_grid.F90\
+m_read_ESACCI_SCHL.F90\
+m_read_ESACCI_SST.F90\
 m_read_CMEMS_grid.F90\
 m_read_CMEMS_SST.F90\
 m_read_CMEMS_SCHL.F90\
@@ -78,6 +81,7 @@ m_read_CERSAT_data.o: nfw.o
 m_read_CLS_TSLA.o: nfw.o
 m_read_MYO_TSLA.o: nfw.o
 m_read_CMEMS_grid.o: nfw.o
+m_read_ESACCI_grid.o: nfw.o
 p_prep_obs.o: m_uobs.o
 m_uobs.o: qmpi.o
 

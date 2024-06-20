@@ -327,7 +327,7 @@ contains
                trim(unique_obs(iuobs)) == 'CHL'  .or. &
                trim(unique_obs(iuobs)) == 'GSAL' .or. &
                trim(unique_obs(iuobs)) == 'GTEM' .or. &
-               trim(unique_obs(iuobs)) == 'GCHL' .or. &
+               trim(unique_obs(iuobs)) == 'GCHL' &
               ) then
 
           if (master) then

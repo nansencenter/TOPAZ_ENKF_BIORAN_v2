@@ -1,11 +1,11 @@
-module m_read_CMEMS_SCHL
-  ! Reads CMEMS SCHL data after having read the grid in read_CMEMS_grid
+module m_read_ESACCI_SCHL
+  ! Reads ESACCI SCHL data after having read the grid in read_ESACCI_grid
 
   integer, parameter, private :: STRLEN = 512
 
 contains
 
-  subroutine read_CMEMS_SCHL(filename,gr,data)
+  subroutine read_ESACCI_SCHL(filename,gr,data)
     use, intrinsic :: ieee_arithmetic
     use mod_measurement
     use mod_grid
@@ -32,7 +32,7 @@ contains
     ! filen name
     logical         :: ex
 
-    print *, 'read_CMEMS_SCHL:'
+    print *, 'read_ESACCI_SCHL:'
 
     inquire(file=trim(filename),exist=ex)
     if (ex) then
@@ -49,11 +49,11 @@ contains
        call nfw_inq_varid(filename, ncid,'lat', lat_ID)
        call nfw_get_var_double(filename, ncid, lat_ID, lat)
 
-       call nfw_inq_varid(filename, ncid,'CHL' ,vdat_ID)
+       call nfw_inq_varid(filename, ncid,'chlor_a' ,vdat_ID)
        call nfw_get_var_double(filename, ncid, vdat_ID, dat)
        call nfw_get_att_double(filename, ncid, vdat_ID, '_FillValue', undef_dat(1))
 
-       call nfw_inq_varid(filename, ncid,'CHL_uncertainty' ,vstd_ID)
+       call nfw_inq_varid(filename, ncid,'chlor_a_log10_rmsd' ,vstd_ID)
        call nfw_get_var_double(filename, ncid, vstd_ID, std)
        !
        call nfw_close(filename, ncid)
@@ -70,7 +70,7 @@ contains
 
        ! convert log10 std to linear std
 
-       std = 0.01*std*abs(dat) ! error info is given by %
+       std = abs(dat)*(10.0**std - 1.0) ! error information is given by std of log10(chlor_a)
 
        ! mask for valud data grids
        mask = .not. ieee_is_nan(dat)
@@ -97,6 +97,8 @@ contains
                    data(count1)%a1 = spherdist(real(lon(i))-.5*gr%dx,real(lat(j))-.5*gr%dy,real(lon(i))+.5*gr%dx,real(lat(j))+.5*gr%dy)
                    data(count1)%ns = 1 ! 1 for data with a spatial extent
                    data(count1)%var = (std(i,j)*Lscale)**2 
+                   !data(count1)%var = (abs(dat(i,j)*std(i,j))*Lscale) ** 2 ! convert log10 std to linear std
+                   !data(count1)%var = (dat(i,j)*((10.0**std(i,j) - 1.0))*Lscale) ** 2 ! convert log10 std to linear std
                    data(count1)%date = 0
                    data(count1)%depth = 0.0
                    data(count1)%status = .true.
@@ -109,5 +111,5 @@ contains
     end if ! ex
     print *, 'MAX var(SCHL) = ', maxval(data % var)
     !print *, 'MAX var(SCHL) = ', maxval(data(1 : count1) % var)
-  end subroutine read_CMEMS_SCHL
-end module m_read_CMEMS_SCHL
+  end subroutine read_ESACCI_SCHL
+end module m_read_ESACCI_SCHL

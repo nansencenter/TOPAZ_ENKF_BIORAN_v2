@@ -25,6 +25,9 @@
 program p_prep_obs
   use mod_measurement
   use mod_grid
+  use m_read_ESACCI_grid
+  use m_read_ESACCI_SCHL
+  use m_read_ESACCI_SST
   use m_read_CMEMS_grid
   use m_read_CMEMS_SST
   use m_read_CMEMS_SCHL
@@ -171,6 +174,26 @@ program p_prep_obs
         call read_CMEMS_SCHL(fname, gr, data)
      else
         stop 'ERROR: CMEMS only produces SST or SCHL'
+     endif
+
+  else if (trim(Producer) == 'ESACCI') then
+
+     if (trim(obstype) == 'SST') then
+        dosuperob = .true.
+        call read_ESACCI_grid(fnamehdr, gr)
+        grpoints = gr % nx * gr % ny
+        allocate(data(grpoints))
+        allocate(obs(maxobs))
+        call read_ESACCI_SST(fname, gr, data)
+     else if (trim(obstype) == 'SCHL') then
+        dosuperob = .true.
+        call read_ESACCI_grid(fnamehdr, gr)
+        grpoints = gr % nx * gr % ny
+        allocate(data(grpoints))
+        allocate(obs(maxobs))
+        call read_ESACCI_SCHL(fname, gr, data)
+     else
+        stop 'ERROR: ESACCI only produces SST or SCHL'
      endif
 
   else if (trim(Producer) == 'MET') then
