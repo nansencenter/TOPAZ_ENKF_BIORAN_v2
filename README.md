@@ -14,6 +14,6 @@ get_mod_cnfg
 
 - configuration specific ```meanssh.nc``` is still required for SLA assimilation.
 
-### TODO
+### TODO:
 
 - read ```meanssh.nc``` only for SLA assimilation
