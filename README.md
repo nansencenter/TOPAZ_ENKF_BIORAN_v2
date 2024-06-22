@@ -10,7 +10,9 @@ get_mod_cnfg
 ```
 - ```depth``` is used for making land mask in ```Prep_Routines``` without using ```meanssh.nc```
 
-Note configuration specific ```meanssh.nc``` is still required for SLA assimilation.
+### Notes:
+
+- configuration specific ```meanssh.nc``` is still required for SLA assimilation.
 
 ### TODO
 
