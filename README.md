@@ -8,11 +8,12 @@ Following updates are for making TOPAZ EnKF flexible for hycom configuration opt
 ```
 get_mod_cnfg
 ```
-- ```depth``` is used for making land mask in ```Prep_Routines``` without using ```meanssh.nc```
+instead of being read from ```depth*.uf```.
 
 #### notes:
 
-- configuration specific ```meanssh.nc``` is still required for SLA assimilation.
+- ```depth``` read from ```regional.depth.(a,b)``` is used for making land mask in ```Prep_Routines``` without using ```meanssh.uf```
+- configuration specific ```meanssh.uf``` and `````` are still required for SLA data prepobs.
 
 ### TODO:
 
