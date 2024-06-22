@@ -13,7 +13,7 @@ instead of being read from ```depth*.uf```.
 #### notes:
 
 - ```depth``` read from ```regional.depth.(a,b)``` is used for making land mask in ```Prep_Routines``` without using ```meanssh.uf```
-- configuration specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
+- configuration-specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
 
 ### TODO:
 
