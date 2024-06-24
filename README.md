@@ -8,7 +8,7 @@ Following updates are for making TOPAZ EnKF flexible for hycom configuration opt
 ```
 get_mod_cnfg
 ```
-This change removes requirement of ```depth*.uf``` file to read ```depth``` information.
+This change removes requirement of ```depth*.uf``` file to read ```depth``` information both in ```EnKF``` and ```prepobs```.
 
 #### notes:
 
