@@ -21,5 +21,5 @@ m_io_hycom.F90
 
 - read ```meanssh.nc``` only for SLA assimilation.
 - register ```SCHL, CHL, POC, NIT, SIL, PHO, OXY```.
-- add ```m_global_analysis.F90``` for parameter estimation.
+- add ```m_global_analysis.F90``` for ecoregion-dependent parameter estimation.
 - add analysis masks based on mixder layer depth, sea ice concentration and surface nitrate concentration.
