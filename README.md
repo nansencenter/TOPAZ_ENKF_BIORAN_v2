@@ -4,9 +4,10 @@
 
 Following updates are for making TOPAZ EnKF flexible for hycom configuration options:
 
-- hycom configuration files: ```regional.grid.(a,b)```, ```regional.depth.(a,b)``` are read through a new module:
+- hycom configuration files: ```regional.grid.(a,b)```, ```regional.depth.(a,b)``` are read through new modules:
 ```
-get_mod_cnfg
+m_get_mod_cnfg.F90
+m_io_hycom.F90
 ```
 
 #### notes:
