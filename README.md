@@ -8,10 +8,10 @@ Following updates are for making TOPAZ EnKF flexible for hycom configuration opt
 ```
 get_mod_cnfg
 ```
-This change removes requirement of ```depth*.uf``` file to read ```depth``` information both in ```EnKF``` and ```prepobs```.
 
 #### notes:
 
+- This change removes requirement of ```depth*.uf``` file to read ```depth``` information both in ```EnKF``` and ```prepobs```.
 - ```depth``` read from ```regional.depth.(a,b)``` is used for making land mask in ```Prep_Routines``` without using ```meanssh.uf```
 - configuration-specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
 
