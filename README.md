@@ -20,5 +20,5 @@ m_io_hycom.F90
 ### TODO:
 
 - read ```meanssh.nc``` only for SLA assimilation.
-- register ```SCHL, CHL, NIT, SIL, PHO, OXY```.
+- register ```SCHL, CHL, POC, NIT, SIL, PHO, OXY```.
 - add ```m_global_analysis.F90``` for parameter estimation.
