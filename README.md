@@ -15,7 +15,7 @@ m_io_hycom.F90
 - This change removes requirement of ```depth*.uf``` file to read ```depth``` information both in ```EnKF``` and ```prepobs```.
 - ```depth``` read from ```regional.depth.(a,b)``` is used for making land mask in ```Prep_Routines/m_get_def_wet_point.F90``` without using ```meanssh.uf```
 - configuration-specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
-- BGC observations: ```SCHL, CHL, POC, NIT, SIL, PHO, OXY``` data are NOT ready to be assimilated.
+- BGC observations: ```SCHL, CHL, POC, NIT, SIL, PHO, OXY``` are NOT ready to be assimilated.
 
 ### TODO:
 
