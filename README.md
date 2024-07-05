@@ -13,7 +13,7 @@ m_io_hycom.F90
 
 #### notes:
 
-- This change removes requirement of ```depth*.uf``` file to read ```depth``` information both in ```EnKF``` and ```prepobs```.
+- This change removes requirement of ```depth*.uf``` file to provide ```depth``` information both to ```EnKF``` and ```prepobs```.
 - configuration-specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
 - BGC observations: ```SCHL, CHL, POC, NIT, SIL, PHO, OXY``` are NOT ready to be assimilated.
 
