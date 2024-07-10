@@ -1,16 +1,25 @@
-# topaz-enkf
+# TOPAZ EnKF with BGC assimilation
 
-#default modules for loading on Betzy
-# updated in March 2024
+### main update
 
-ml purge
-ml load CMake/3.23.1-GCCcore-11.3.0
-ml load ESMF/8.3.0-iomkl-2022a
-ml load FFTW/3.3.10-GCC-11.3.0
-ml load UDUNITS/2.2.28-GCCcore-11.3.0
-ml load Python/3.10.4-GCCcore-11.3.0
-ml load GSL/2.7-intel-compilers-2022.1.0
-ml load NCO/5.1.9-iomkl-2022a
+Following updates are for making TOPAZ EnKF flexible for hycom configuration options:
 
+- hycom configuration files, ```regional.grid.(a,b)``` and ```regional.depth.(a,b)```, are read through new modules:
+```
+m_get_mod_cnfg.F90
+m_io_hycom.F90
+```
+- ```depth``` read from ```regional.depth.(a,b)``` is used for making land mask in ```Prep_Routines/m_get_def_wet_point.F90``` without using ```meanssh.uf```
 
+#### notes:
 
+- This change removes requirement of ```depth*.uf``` file to provide ```depth``` information both to ```EnKF``` and ```prepobs```.
+- configuration-specific ```meanssh.uf``` and ```re_sla.nc``` are still required for SLA data prepobs.
+- BGC observations: ```SCHL, CHL, POC, NIT, SIL, PHO, OXY``` are NOT ready to be assimilated.
+
+### TODO:
+
+- read ```meanssh.nc``` only for SLA assimilation.
+- register ```SCHL, CHL, POC, NIT, SIL, PHO, OXY```.
+- add ```m_global_analysis.F90``` for ecoregion-dependent parameter estimation.
+- add analysis masks based on mixder layer depth, sea ice concentration and surface nitrate concentration.
