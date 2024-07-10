@@ -224,7 +224,10 @@ contains
 
     ! for glider data - sort observations in each profile by increasing depth
     !
-    if (trim(obstag) == 'GSAL'.or. trim(obstag) == 'GTEM') then
+    if ( trim(obstag) == 'GSAL' .or. trim(obstag) == 'GTEM' &
+    .or. trim(obstag) == 'GNIT' .or. trim(obstag) == 'GCHL' &
+    .or. trim(obstag) == 'GOXY' &
+       ) then
        allocate(tmp(nobs))
        allocate(tmp1(nobs))
        allocate(tmpobs(nobs))
@@ -275,7 +278,7 @@ contains
     integer :: oo
     real :: rdummy
     integer :: k, nk, ni, nj
-    character(80) :: fname
+    character(STRLEN) :: fname
     integer :: tlevel
     real, allocatable, dimension(:, :) :: dz2d
     real, dimension(2, 2) :: dz_cell
@@ -394,8 +397,14 @@ contains
 
     ! get the data file name
     !
-    if (trim(obstag) /= 'SAL' .and. trim(obstag) /= 'TEM' .and.&
-         trim(obstag) /= 'GSAL'.and. trim(obstag) /= 'GTEM') then
+    if (  trim(obstag) /= 'SAL' .and. trim(obstag) /= 'GSAL' &
+    .and. trim(obstag) /= 'TEM' .and. trim(obstag) /= 'GTEM' &
+    .and. trim(obstag) /= 'CHL' .and. trim(obstag) /= 'GCHL' &
+    .and. trim(obstag) /= 'NIT' .and. trim(obstag) /= 'GNIT' &
+    .and. trim(obstag) /= 'OXY' .and. trim(obstag) /= 'GOXY' &
+    .and. trim(obstag) /= 'SIL' &
+    .and. trim(obstag) /= 'PHO' &
+       ) then
        print *, 'ERROR: get_S(): unknown observation tag "', trim(obstag), '"'
        stop
     end if
@@ -642,6 +651,12 @@ contains
        varname = 'salt'
     else if (trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM') then
        varname = 'temp'
+    else if (trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL') then
+       varname = 'chla'
+    else if (trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT') then
+       varname = 'ntra'
+    else if (trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY') then
+       varname = 'doxy'
     else
        varname = trim(obstag)
     end if
