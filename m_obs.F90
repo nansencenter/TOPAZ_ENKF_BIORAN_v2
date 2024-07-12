@@ -90,8 +90,23 @@ module m_obs
   real, parameter, private :: HICE_MAX = 5.99d0
   real, parameter, private :: SKIM_MIN = -2.0d5
   real, parameter, private :: SKIM_MAX = 2.0d5
+
+  ! BGC variables
+  !
   real, parameter, private :: CHL_MIN =  0.0d0
   real, parameter, private :: CHL_MAX = 20.0d0
+  real, parameter, private :: NIT_MIN =  0.0d0
+  real, parameter, private :: NIT_MAX = 20.0d0
+  real, parameter, private :: SIL_MIN =  0.0d0
+  real, parameter, private :: SIL_MAX = 20.0d0
+  real, parameter, private :: PHO_MIN =  0.0d0
+  real, parameter, private :: PHO_MAX = 10.0d0
+  real, parameter, private :: OXY_MIN =  0.0d0
+  real, parameter, private :: OXY_MAX = 30.0d0
+
+  ! default settings of BGC Box-Cox transformation
+  !
+  logical :: lognormal = .true. 
 
   private obs_prepareuobs, obs_realloc
 
@@ -109,6 +124,7 @@ contains
     integer :: rsize
     integer :: ios
     integer :: o
+    real :: obsd, obsvar
 
     if (nobs >= 0) then
        return
@@ -121,6 +137,7 @@ contains
        end if
        stop
     end if
+
     inquire(iolength = rsize) record
     open(10, file = 'observations.uf', form = 'unformatted',&
          access = 'direct', recl = rsize, status = 'old')
@@ -145,10 +162,29 @@ contains
     ! "Cannot REWIND a file opened for DIRECT access". Therefore reopen.
     !
     close(10)
+
     open(10, file = 'observations.uf', form = 'unformatted',&
          access = 'direct', recl = rsize, status = 'old')
     do o = 1, nobs
        read(10, rec = o) obs(o)
+
+       ! Nonlinear transformation of BGC variables to normal distribution
+       !
+       if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
+       .or. trim(obs(o) % id) == 'OXY' .or. trim(obs(o) % id) == 'GOXY' &
+       .or. trim(obs(o) % id) == 'NIT' .or. trim(obs(o) % id) == 'GNIT' &
+       .or. trim(obs(o) % id) == 'SIL' &
+       .or. trim(obs(o) % id) == 'PHO' ) then
+          ! Forward Box-Cox transformation (FBCT).
+          !
+          if (lognormal) then ! lambda=0 (Log-Normal transformation)
+             obsd   = obs(o) % d
+             obsvar = obs(o) % var
+             obs(o) % d   = log(obsd)                       ! mean
+             obs(o) % var = log(obsvar / (obsd)**2 + 1.0)   ! variance 
+          endif
+       endif
+
        call ucase(obs(o) % id)
     enddo
     close(10)
@@ -159,8 +195,8 @@ contains
        end do
     end if
 
-   call  uobs_get(obs % id, nobs, Typobs, master)
-   call obs_testrange
+    call uobs_get(obs % id, nobs, Typobs, master)
+    call obs_testrange
   end subroutine obs_readobs
 
 
@@ -172,18 +208,19 @@ contains
        print '(a)', ' EnKF: testing range for each type of obs '
     end if
     do uo = 1, nuobs
-       if (trim(unique_obs(uo)) == 'SST' .or. trim(unique_obs(uo)) == 'TEM'&
-            .or. trim(unique_obs(uo)) == 'GTEM') then
+       if     (trim(unique_obs(uo)) == 'TEM' &
+          .or. trim(unique_obs(uo)) == 'GTEM' &
+          .or. trim(unique_obs(uo)) == 'SST') then
           dmin = TEM_MIN
           dmax = TEM_MAX
-       elseif (trim(unique_obs(uo)) == 'SAL'&
-            .or. trim(unique_obs(uo)) == 'SSS'&
-            .or. trim(unique_obs(uo)) == 'GSAL') then
+       elseif (trim(unique_obs(uo)) == 'SAL' &
+          .or. trim(unique_obs(uo)) == 'GSAL' &
+          .or. trim(unique_obs(uo)) == 'SSS') then
           dmin = SAL_MIN
           dmax = SAL_MAX
-       elseif (trim(unique_obs(uo)) == 'SLA'&
-            .or. trim(unique_obs(uo)) == 'TSLA'&
-            .or. trim(unique_obs(uo)) == 'SSH') then
+       elseif (trim(unique_obs(uo)) == 'SLA'  &
+          .or. trim(unique_obs(uo)) == 'TSLA' &
+          .or. trim(unique_obs(uo)) == 'SSH') then
           dmin = SSH_MIN
           dmax = SSH_MAX
        elseif (trim(unique_obs(uo)) == 'ICEC') then
@@ -192,23 +229,39 @@ contains
        elseif (trim(unique_obs(uo)) == 'HICE') then
           dmin = HICE_MIN
           dmax = HICE_MAX
-       elseif (trim(unique_obs(uo)) == 'VICE'&
-            .or. trim(unique_obs(uo)) == 'UICE') then
+       elseif (trim(unique_obs(uo)) == 'VICE' &
+          .or. trim(unique_obs(uo)) == 'UICE') then
           dmin = UVICE_MIN
           dmax = UVICE_MAX
        elseif (trim(unique_obs(uo)) == 'SKIM') then
           dmin = SKIM_MIN
           dmax = SKIM_MAX
        elseif ((index(trim(unique_obs(uo)),'DX') .gt. 0) &
-            .or. (index(trim(unique_obs(uo)),'DY') .gt. 0)) then
+          .or. (index(trim(unique_obs(uo)),'DY') .gt. 0)) then
           ! The type can be DX1,DX2,..,DX5,DY1,..DY5
           dmin = UVICE_MIN
           dmax = UVICE_MAX
        elseif (trim(unique_obs(uo)) == 'CHL'  &
-          .or. trim(unique_obs(uo)) == 'SCHL' &
-          .or. trim(unique_obs(uo)) == 'GCHL') then
+          .or. trim(unique_obs(uo)) == 'GCHL' &
+          .or. trim(unique_obs(uo)) == 'SCHL') then
           dmin = CHL_MIN
           dmax = CHL_MAX
+       elseif (trim(unique_obs(uo)) == 'OXY'  &
+          .or. trim(unique_obs(uo)) == 'GOXY') then
+          dmin = OXY_MIN
+          dmax = OXY_MAX
+       elseif (trim(unique_obs(uo)) == 'NIT'  &
+          .or. trim(unique_obs(uo)) == 'GNIT') then
+          dmin = NIT_MIN
+          dmax = NIT_MAX
+       elseif (trim(unique_obs(uo)) == 'SIL'  &
+          .or. trim(unique_obs(uo)) == 'GSIL') then
+          dmin = SIL_MIN
+          dmax = SIL_MAX
+       elseif (trim(unique_obs(uo)) == 'PHO'  &
+          .or. trim(unique_obs(uo)) == 'GPHO') then
+          dmin = PHO_MIN
+          dmax = PHO_MAX
        else
           dmin = -1.0d6
           dmax = 1.0d6
@@ -216,6 +269,21 @@ contains
           stop
        end if
        
+       ! Nonlinear transformation of BGC variables to normal distribution
+       !
+       if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
+       .or. trim(obs(o) % id) == 'OXY' .or. trim(obs(o) % id) == 'GOXY' &
+       .or. trim(obs(o) % id) == 'NIT' .or. trim(obs(o) % id) == 'GNIT' &
+       .or. trim(obs(o) % id) == 'SIL' &
+       .or. trim(obs(o) % id) == 'PHO' ) then
+          ! Forward Box-Cox transformation (FBCT).
+          !
+          if (lognormal) then ! lambda=0 (Log-Normal transformation)
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
+       endif
+
        nbad = 0
        do o = uobs_begin(uo), uobs_end(uo)
           if (obs(o) % status .and.&
@@ -267,8 +335,13 @@ contains
 
     character(STRLEN) :: fname
 
-    if (trim(obstag) == 'SAL' .or. trim(obstag) == 'TEM' .or.&
-         trim(obstag) == 'GSAL' .or. trim(obstag) == 'GTEM') then
+    if  (trim(obstag) == 'SAL' .or. trim(obstag) == 'GSAL' &
+    .or. trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM' & 
+    .or. trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' & 
+    .or. trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY' & 
+    .or. trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT' & 
+    .or. trim(obstag) == 'SIL' &
+    .or. trim(obstag) == 'PHO') then
        call insitu_prepareobs(trim(obstag), nobs, obs)
        if (master) then
           write(fname, '(a, ".nc")') trim(obstag)
