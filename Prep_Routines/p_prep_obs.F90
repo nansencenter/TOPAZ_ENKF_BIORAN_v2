@@ -31,6 +31,7 @@ program p_prep_obs
   use m_read_CMEMS_grid
   use m_read_CMEMS_SST
   use m_read_CMEMS_SCHL
+  use m_read_CMEMS_CORA
   use m_read_CLS_header
   use m_read_CLS_data
   use m_read_CLS_SST_grid
@@ -369,6 +370,17 @@ program p_prep_obs
        !
        data_eq_obs = .true.
      endif
+
+  elseif (trim(producer) == 'CMEMS_CORA') then
+
+     allocate(data(maxobs))
+     dosuperob = .true.
+     is3d = .true.
+     read(fnamehdr, *) var
+     print *, 'variance =', var
+     call read_CMEMS_CORA(fname, obstype, var, nx, ny, data)
+     ! see the comment for producer = IFREMER
+     data_eq_obs = .true.
 
   elseif (trim(producer) == 'JPL') then
 

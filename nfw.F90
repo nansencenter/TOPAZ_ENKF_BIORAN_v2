@@ -36,6 +36,8 @@
 !          nfw_put_var_double(fname, ncid, varid, v)
 !          nfw_put_var_real(fname, ncid, varid, v)
 !          nfw_get_var_int(fname, ncid, varid, v)
+!          nfw_get_var_int1(fname, ncid, varid, v)
+!          nfw_get_var_int2(fname, ncid, varid, v)
 !          nfw_get_var_double(fname, ncid, varid, v)
 !          nfw_put_vara_int(fname, ncid, varid, start, length, v)
 !          nfw_put_vara_double(fname, ncid, varid, start, length, v)
@@ -68,6 +70,7 @@
 !                nfw_put_att_real(fname, ncid, varid, attname, type, length, v)
 !                nfw_get_att_real(fname, ncid, varid, attname, v)
 ! ??/??/2023 PS: nfw_get_var_double2D(fname, ncid, varid, vlevel,v,nx,ny)
+!
 
 module nfw_mod
   implicit none

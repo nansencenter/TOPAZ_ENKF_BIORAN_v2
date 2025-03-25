@@ -26,6 +26,7 @@ m_read_CMEMS_grid.F90\
 m_read_CMEMS_SST.F90\
 m_read_CMEMS_SCHL.F90\
 m_read_CMEMS_ICEC.F90\
+m_read_CMEMS_CORA.F90\
 m_read_CERSAT_data.F90\
 m_read_OSISAF_data.F90\
 m_read_CLS_SLA.F90\
