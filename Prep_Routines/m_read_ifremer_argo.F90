@@ -80,7 +80,7 @@ contains
     real(8), allocatable :: pres(:,:)
     character, allocatable :: pres_qc(:,:)
     real(8), allocatable :: temp(:,:), salt(:, :)
-    character, allocatable :: temp_qc(:,:), salt_qc(:, :)
+    character, allocatable :: temp_qc(:,:), psal_qc(:, :)
     integer, allocatable :: ipiv(:), jpiv(:)
 
     real(8), dimension(nx, ny) :: modlat, modlon
@@ -140,7 +140,7 @@ contains
     allocate(temp(nlev, nprof))
     allocate(salt(nlev, nprof))
     allocate(temp_qc(nlev, nprof))
-    allocate(salt_qc(nlev, nprof))
+    allocate(psal_qc(nlev, nprof))
 
     pres=99999.
     temp=99999.
@@ -154,7 +154,7 @@ contains
             lon(p : nprof), pos_qc(p : nprof), pres(1 : nlev, p : nprof),&
             pres_qc(1 : nlev, p : nprof), temp(1 : nlev, p : nprof),&
             temp_qc(1 : nlev, p : nprof), salt(1 : nlev, p : nprof),&
-            salt_qc(1 : nlev, p : nprof),Profname(p:nprof),Fobslist)
+            psal_qc(1 : nlev, p : nprof),Profname(p:nprof),Fobslist)
 
             allocate(Pdep_tmp(nlev),Pdep_min(np),Pdep_max(np))
             Pdep_tmp=0;
@@ -189,7 +189,7 @@ contains
             lon(p : nprof), pos_qc(p : nprof), pres(1 : nlev, p : nprof),&
             pres_qc(1 : nlev, p : nprof), temp(1 : nlev, p : nprof),&
             temp_qc(1 : nlev, p : nprof), salt(1 : nlev, p : nprof),&
-            salt_qc(1 : nlev, p : nprof))
+            psal_qc(1 : nlev, p : nprof))
 #endif
        fid(p : p + np - 1) = f
        do l = 1, np
@@ -293,8 +293,8 @@ contains
     if (trim(obstype) == 'SAL') then
        do p = 1, nprof
           do l = 1, nlev
-             !if (salt_qc(l, p) /= '1' .and. salt_qc(l, p) /= '2') then
-             if (salt_qc(l, p) /= '1') then
+             !if (psal_qc(l, p) /= '1' .and. psal_qc(l, p) /= '2') then
+             if (psal_qc(l, p) /= '1') then
                 mask2(l, p) = 0
              end if
           end do
@@ -370,8 +370,8 @@ contains
              exit
           end if
           if ((trim(obstype) == 'SAL' .and.&
-               !(salt_qc(l, p) == '1' .or. salt_qc(l, p) == '2')) .and.&
-               salt_qc(l, p) == '1' ).and.&
+               !(psal_qc(l, p) == '1' .or. psal_qc(l, p) == '2')) .and.&
+               psal_qc(l, p) == '1' ).and.&
                (salt(l, p) < SAL_MIN .or. salt(l, p) > SAL_MAX)) then
              mask(p) = 0 ! discard the profile
              mask2(:, p) = 0
@@ -393,8 +393,8 @@ contains
        do l = 1, nlev
           if (mask2(l, p) == 0 .or.&
                !(temp_qc(l, p) /= '1' .and. temp_qc(l, p) /= '2') .or.&
-               !(salt_qc(l, p) /= '1' .and. salt_qc(l, p) /= '2')) then
-               temp_qc(l, p) /= '1' .or. salt_qc(l, p) /= '1' ) then
+               !(psal_qc(l, p) /= '1' .and. psal_qc(l, p) /= '2')) then
+               temp_qc(l, p) /= '1' .or. psal_qc(l, p) /= '1' ) then
              cycle
           end if
           if (rho_prev == -999.0) then
@@ -597,7 +597,7 @@ contains
     deallocate(temp)
     deallocate(salt)
     deallocate(temp_qc)
-    deallocate(salt_qc)
+    deallocate(psal_qc)
     deallocate(mask)
     deallocate(mask2)
     deallocate(ipiv)
@@ -672,7 +672,7 @@ contains
 
 
   subroutine data_readfile(fid, obstype, nprof, juld_all, juld_qc_all,&
-    lat_all, lon_all, pos_qc_all, pres_all, pres_qc_all, temp_all, temp_qc_all, salt_all, salt_qc_all,Pfname,Pfile)
+    lat_all, lon_all, pos_qc_all, pres_all, pres_qc_all, temp_all, temp_qc_all, salt_all, psal_qc_all,Pfname,Pfile)
     use ifport
     use nfw_mod
     integer, intent(in) :: fid
@@ -687,7 +687,7 @@ contains
     real(8), intent(inout), dimension(:,:) :: temp_all
     character, intent(inout), dimension(:,:) :: temp_qc_all
     real(8), intent(inout), dimension(:,:) :: salt_all
-    character, intent(inout), dimension(:,:) :: salt_qc_all
+    character, intent(inout), dimension(:,:) :: psal_qc_all
     character(len=32), intent(inout), dimension(:),optional :: Pfname
     character(len=100), intent(inout), optional :: Pfile
 
@@ -978,9 +978,9 @@ contains
        ! psal_qc
        !
        call nfw_inq_varid(fname, ncid, 'PSAL_QC', id)
-       call nfw_get_var_text(fname, ncid, id, salt_qc_all(1 : nlev, 1 : nprof))
+       call nfw_get_var_text(fname, ncid, id, psal_qc_all(1 : nlev, 1 : nprof))
     else
-       salt_qc_all = 'E';
+       psal_qc_all = 'E';
     end if
 
 
