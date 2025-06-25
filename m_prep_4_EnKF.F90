@@ -322,14 +322,22 @@ contains
              end if
           end do
 
-       elseif (trim(unique_obs(iuobs)) == 'SAL'  .or. &
-               trim(unique_obs(iuobs)) == 'TEM'  .or. &
-               trim(unique_obs(iuobs)) == 'CHL'  .or. &
-               trim(unique_obs(iuobs)) == 'GSAL' .or. &
-               trim(unique_obs(iuobs)) == 'GTEM' .or. &
-               trim(unique_obs(iuobs)) == 'GCHL' &
-              ) then
-
+       elseif ( trim(unique_obs(iuobs)) == 'SAL' &
+           .or. trim(unique_obs(iuobs)) == 'TEM'  &
+           .or. trim(unique_obs(iuobs)) == 'GSAL' &
+           .or. trim(unique_obs(iuobs)) == 'GTEM' &
+#if defined BIORAN
+           .or. trim(unique_obs(iuobs)) == 'CHL'  &
+           .or. trim(unique_obs(iuobs)) == 'GCHL' &
+           .or. trim(unique_obs(iuobs)) == 'SCHL' &
+           .or. trim(unique_obs(iuobs)) == 'OXY'  &
+           .or. trim(unique_obs(iuobs)) == 'GOXY' &
+           .or. trim(unique_obs(iuobs)) == 'NIT'  &
+           .or. trim(unique_obs(iuobs)) == 'GNIT' &
+           .or. trim(unique_obs(iuobs)) == 'SIL'  &
+           .or. trim(unique_obs(iuobs)) == 'PHO'  &
+#endif          
+       ) then
           if (master) then
              print *, '  Interpolating ensemble vectors to the locations of "',&
                   trim(unique_obs(iuobs)), '" observations'
@@ -429,11 +437,22 @@ contains
           ! variances) to the file with pre-processed observations (SAL.nc,
           ! TEM.nc, GSAL.nc or GTEM.nc)
           !
-          if (trim(unique_obs(iuobs)) == 'SAL' .or.&
-               trim(unique_obs(iuobs)) == 'TEM' .or.&
-               trim(unique_obs(iuobs)) == 'GSAL' .or.&
-               trim(unique_obs(iuobs)) == 'GTEM') then
-          
+          if ( trim(unique_obs(iuobs)) == 'SAL'  &
+          .or. trim(unique_obs(iuobs)) == 'TEM'  &
+          .or. trim(unique_obs(iuobs)) == 'GSAL' &
+          .or. trim(unique_obs(iuobs)) == 'GTEM' &
+#if defined BIORAN
+          .or. trim(unique_obs(iuobs)) == 'CHL'  &
+          .or. trim(unique_obs(iuobs)) == 'GCHL' &
+          .or. trim(unique_obs(iuobs)) == 'SCHL' &
+          .or. trim(unique_obs(iuobs)) == 'OXY'  &
+          .or. trim(unique_obs(iuobs)) == 'GOXY' &
+          .or. trim(unique_obs(iuobs)) == 'NIT'  &
+          .or. trim(unique_obs(iuobs)) == 'GNIT' &
+          .or. trim(unique_obs(iuobs)) == 'SIL'  &
+          .or. trim(unique_obs(iuobs)) == 'PHO'  &
+#endif          
+          ) then
              call insitu_writeforecast(unique_obs(iuobs), nobs, nrens, S, obs)
           end if
        end if
