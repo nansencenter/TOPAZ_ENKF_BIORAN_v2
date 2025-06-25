@@ -54,6 +54,13 @@ m_insitu.o: nfw.o mod_measurement.o
 m_local_analysis.o: mod_measurement.o m_point2nc.o m_parameters.o
 m_get_mod_cnfg.o: qmpi.o mod_raw_io.o m_io_hycom.o
 
+#m_get_mod_fld.o: mod_raw_io.o nfw.o m_get_mod_fld_nc.o
+#m_insitu.o: nfw.o mod_measurement.o m_get_mod_fld.o
+#m_obs.o: m_uobs.o m_insitu
+#m_Generate_element_Si.o: m_parse_blkdat.o mod_measurement.o m_get_mod_fld.o m_insitu.o
+#m_local_analysis.o: mod_measurement.o m_point2nc.o m_parameters.o
+#m_get_mod_cnfg.o: qmpi.o mod_raw_io.o m_io_hycom.o m_obs.o 
+
 EnKF: $(ENKF_OBJ)
 	@echo "->EnKF"
 	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../EnKF $(ENKF_OBJ) $(LIBS) 

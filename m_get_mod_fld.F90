@@ -2,7 +2,11 @@ module m_get_mod_fld
 ! KAL -- This routine reads one of the fields from the model, specified
 ! KAL -- by name, vertical level and time level 
 ! KAL -- This routine is really only effective for the new restart files.
-
+#if defined BIORAN
+  ! default settings of BGC Box-Cox transformation
+  !
+  logical :: lognormal = .true.
+#endif  
 contains
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -89,6 +93,7 @@ subroutine get_mod_fld_new(memfile,fld,iens,cfld0,vlevel,tlevel,nx,ny,Indfield)
    integer :: indx
 !----------------------------------- 
    character*80 :: cfld,icefile
+   
    cfld=trim(cfld0)
 #if defined (HYCOM_CICE)
    if (trim(cfld0) == 'SSH') then
@@ -158,7 +163,40 @@ subroutine get_mod_fld_new(memfile,fld,iens,cfld0,vlevel,tlevel,nx,ny,Indfield)
         print *,'node ',qmpi_proc_num
         call exit(1)
      end if
+#if defined(BIORAN)
+     if (lognormal) then
+        !
+        ! [2019.10.04] TW
+        !   Following variable list should be cap of list in analysisfields.in
+        ! [2015.06.25] TW
+        !   Following variable list should be matched with the list in m_put_mod_fld.F90
+        !
+        if ( trim(cfld) == 'ECO_fla'  &  ! FLA
+        .or. trim(cfld) == 'ECO_dia'  &  ! DIA
+        .or. trim(cfld) == 'ECO_micr' &  ! MICRO
+        .or. trim(cfld) == 'ECO_meso' &  ! MESO
+        .or. trim(cfld) == 'ECO_no3'  &  ! NIT
+        .or. trim(cfld) == 'ECO_pho'  &  ! PHO
+        .or. trim(cfld) == 'ECO_sil'  &  ! SIL
+        .or. trim(cfld) == 'ECO_oxy'  &  ! OXY
+        .or. trim(cfld) == 'ECO_flac' &  ! CHLFLA
+        .or. trim(cfld) == 'ECO_diac' &  ! CHLDIA
+        .or. trim(cfld) == 'ECO_cclc' &  ! CHLCCL
+        ) then
+           ! Forward Box-Cox transformation (FBCT). See m_put_mod_fld.F90 for the Inverse BCT (IBCT).
+           ! [2019.06.07] TW
+           !   So far, only the case: lambda=0 (Log-Normal transformation) is available.
+           !   Targeted variables should be selected here, but we transform all listed in analysisfields.in so far.
+           fld=log(readfldr4)
+        else
+           fld=readfldr4
+        endif
+     else
+        fld=readfldr4
+     endif
+#else     
      fld=readfldr4
+#endif
 
    else ! fld = fice, hice
       ! Gammal rutine ja

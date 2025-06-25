@@ -4,6 +4,11 @@ module m_put_mod_fld
 ! KAL -- Its a bit dangerous to use -- indx must be updated correctly (max one 
 ! KAL -- increment per call of this routine), otherwise there wil be a 
 ! KAL -- inconsistency between .a and .b files
+#if defined BIORAN
+  ! default settings of BGC Box-Cox transformation
+  !
+  logical :: lognormal = .true.
+#endif  
 contains
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -23,12 +28,47 @@ subroutine put_mod_fld(memfile,fld,iens,cfld,vlevel,tlevel,indx,nx,ny)
 
    real*4:: amin, amax,spval
    real*4:: writefldr4(nx,ny)
+   real*4:: writefldr4_tmpl(nx,ny)
    integer , parameter :: nop=123
    integer :: ios
 
    spval=2**100
 
+#if defined BIORAN
+   if (lognormal) then
+      !
+      ! [2019.10.04] TW
+      !   Following variable list should be cap of list in analysisfields.in
+      ! [2015.06.25] TW
+      !   Following variable list should be matched with the list in m_get_mod_fld.F90
+      !
+      if ( trim(cfld) == 'ECO_fla'  &  ! FLA
+      .or. trim(cfld) == 'ECO_dia'  &  ! DIA
+      .or. trim(cfld) == 'ECO_micr' &  ! MICRO
+      .or. trim(cfld) == 'ECO_meso' &  ! MESO
+      .or. trim(cfld) == 'ECO_no3'  &  ! NIT
+      .or. trim(cfld) == 'ECO_pho'  &  ! PHO
+      .or. trim(cfld) == 'ECO_sil'  &  ! SIL
+      .or. trim(cfld) == 'ECO_oxy'  &  ! OXY
+      .or. trim(cfld) == 'ECO_flac' &  ! CHLFLA
+      .or. trim(cfld) == 'ECO_diac' &  ! CHLDIA
+      .or. trim(cfld) == 'ECO_cclc' &  ! CHLCCL
+      ) then
+         ! Inverse Box-Cox transformation (IBCT). See m_get_mod_fld.F90 for the Forward BCT (FBCT).
+         ! [2019.06.07] TW
+         !   So far, only the case: lambda=0 (Log-Normal transformation) is available.
+         !   Targeted variables should be selected here, but we transform all listed in analysisfields.in so far.
+         writefldr4_tmpl = real(fld, 4)
+         writefldr4 = exp(writefldr4_tmpl)
+      else
+         writefldr4 = real(fld, 4)
+      endif
+   else
+      writefldr4 = real(fld, 4)
+   endif
+#else
    writefldr4 = real(fld, 4)
+#endif  
    ! for debug
    !print *, 'Dump: '//trim(memfile)//' '//trim(cfld), vlevel, tlevel,indx
 

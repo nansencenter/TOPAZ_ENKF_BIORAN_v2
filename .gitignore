@@ -5,6 +5,10 @@ EnKF_*
 TMP
 *.swp
 *.swo
+*.org
+*dev*
+*.log
+*test*
 *~
 Prep_Routines/chk_obs
 Prep_Routines/prep_obs

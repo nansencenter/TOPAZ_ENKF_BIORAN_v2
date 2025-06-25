@@ -90,24 +90,20 @@ module m_obs
   real, parameter, private :: HICE_MAX = 5.99d0
   real, parameter, private :: SKIM_MIN = -2.0d5
   real, parameter, private :: SKIM_MAX = 2.0d5
-
+#if defined BIORAN
   ! BGC variables
   !
   real, parameter, private :: CHL_MIN =  0.0d0
   real, parameter, private :: CHL_MAX = 20.0d0
-  real, parameter, private :: NIT_MIN =  0.0d0
-  real, parameter, private :: NIT_MAX = 20.0d0
-  real, parameter, private :: SIL_MIN =  0.0d0
-  real, parameter, private :: SIL_MAX = 20.0d0
-  real, parameter, private :: PHO_MIN =  0.0d0
-  real, parameter, private :: PHO_MAX = 10.0d0
+  real, parameter, private :: NIT_MIN =  0.0d0*12.01*6.625
+  real, parameter, private :: NIT_MAX = 20.0d0*12.01*6.625
+  real, parameter, private :: SIL_MIN =  0.0d0*12.01*6.625
+  real, parameter, private :: SIL_MAX = 20.0d0*12.01*6.625
+  real, parameter, private :: PHO_MIN =  0.0d0*12.01*106.0
+  real, parameter, private :: PHO_MAX = 10.0d0*12.01*106.0
   real, parameter, private :: OXY_MIN =  0.0d0
   real, parameter, private :: OXY_MAX = 30.0d0
-
-  ! default settings of BGC Box-Cox transformation
-  !
-  logical :: lognormal = .true. 
-
+#endif
   private obs_prepareuobs, obs_realloc
 
 contains
@@ -125,6 +121,11 @@ contains
     integer :: ios
     integer :: o
     real :: obsd, obsvar
+#if defined BIORAN
+    ! default settings of BGC Box-Cox transformation
+    !
+    logical :: lognormal = .true.
+#endif  
 
     if (nobs >= 0) then
        return
@@ -168,6 +169,7 @@ contains
     do o = 1, nobs
        read(10, rec = o) obs(o)
 
+#if defined BIORAN
        ! Nonlinear transformation of BGC variables to normal distribution
        !
        if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
@@ -176,15 +178,16 @@ contains
        .or. trim(obs(o) % id) == 'SIL' &
        .or. trim(obs(o) % id) == 'PHO' ) then
           ! Forward Box-Cox transformation (FBCT).
-          !
-          if (lognormal) then ! lambda=0 (Log-Normal transformation)
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then 
              obsd   = obs(o) % d
              obsvar = obs(o) % var
              obs(o) % d   = log(obsd)                       ! mean
              obs(o) % var = log(obsvar / (obsd)**2 + 1.0)   ! variance 
           endif
        endif
-
+#endif
+       
        call ucase(obs(o) % id)
     enddo
     close(10)
@@ -199,10 +202,14 @@ contains
     call obs_testrange
   end subroutine obs_readobs
 
-
   subroutine obs_testrange
     integer :: o, uo, nbad
     real :: dmin, dmax
+#if defined BIORAN
+    ! default settings of BGC Box-Cox transformation
+    !
+    logical :: lognormal = .true.
+#endif  
        
     if (master) then
        print '(a)', ' EnKF: testing range for each type of obs '
@@ -241,6 +248,7 @@ contains
           ! The type can be DX1,DX2,..,DX5,DY1,..DY5
           dmin = UVICE_MIN
           dmax = UVICE_MAX
+#if defined BIORAN
        elseif (trim(unique_obs(uo)) == 'CHL'  &
           .or. trim(unique_obs(uo)) == 'GCHL' &
           .or. trim(unique_obs(uo)) == 'SCHL') then
@@ -254,14 +262,13 @@ contains
           .or. trim(unique_obs(uo)) == 'GNIT') then
           dmin = NIT_MIN
           dmax = NIT_MAX
-       elseif (trim(unique_obs(uo)) == 'SIL'  &
-          .or. trim(unique_obs(uo)) == 'GSIL') then
+       elseif (trim(unique_obs(uo)) == 'SIL' ) then
           dmin = SIL_MIN
           dmax = SIL_MAX
-       elseif (trim(unique_obs(uo)) == 'PHO'  &
-          .or. trim(unique_obs(uo)) == 'GPHO') then
+       elseif (trim(unique_obs(uo)) == 'PHO' ) then
           dmin = PHO_MIN
           dmax = PHO_MAX
+#endif
        else
           dmin = -1.0d6
           dmax = 1.0d6
@@ -269,6 +276,7 @@ contains
           stop
        end if
        
+#if defined BIORAN
        ! Nonlinear transformation of BGC variables to normal distribution
        !
        if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
@@ -277,12 +285,13 @@ contains
        .or. trim(obs(o) % id) == 'SIL' &
        .or. trim(obs(o) % id) == 'PHO' ) then
           ! Forward Box-Cox transformation (FBCT).
-          !
-          if (lognormal) then ! lambda=0 (Log-Normal transformation)
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
             dmin = log(dmin)
             dmax = log(dmax)
           endif
        endif
+#endif
 
        nbad = 0
        do o = uobs_begin(uo), uobs_end(uo)
@@ -337,11 +346,14 @@ contains
 
     if  (trim(obstag) == 'SAL' .or. trim(obstag) == 'GSAL' &
     .or. trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM' & 
-    .or. trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' & 
+#if defined BIORAN
+    .or. trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' .or. trim(obstag) == 'SCHL' & 
     .or. trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY' & 
     .or. trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT' & 
     .or. trim(obstag) == 'SIL' &
-    .or. trim(obstag) == 'PHO') then
+    .or. trim(obstag) == 'PHO' &
+#endif    
+    ) then
        call insitu_prepareobs(trim(obstag), nobs, obs)
        if (master) then
           write(fname, '(a, ".nc")') trim(obstag)

@@ -225,8 +225,10 @@ contains
     ! for glider data - sort observations in each profile by increasing depth
     !
     if ( trim(obstag) == 'GSAL' .or. trim(obstag) == 'GTEM' &
+#if defined BIORAN
     .or. trim(obstag) == 'GNIT' .or. trim(obstag) == 'GCHL' &
     .or. trim(obstag) == 'GOXY' &
+#endif    
        ) then
        allocate(tmp(nobs))
        allocate(tmp1(nobs))
@@ -399,11 +401,13 @@ contains
     !
     if (  trim(obstag) /= 'SAL' .and. trim(obstag) /= 'GSAL' &
     .and. trim(obstag) /= 'TEM' .and. trim(obstag) /= 'GTEM' &
+#if defined BIORAN         
     .and. trim(obstag) /= 'CHL' .and. trim(obstag) /= 'GCHL' &
     .and. trim(obstag) /= 'NIT' .and. trim(obstag) /= 'GNIT' &
     .and. trim(obstag) /= 'OXY' .and. trim(obstag) /= 'GOXY' &
     .and. trim(obstag) /= 'SIL' &
     .and. trim(obstag) /= 'PHO' &
+#endif    
        ) then
        print *, 'ERROR: get_S(): unknown observation tag "', trim(obstag), '"'
        stop
@@ -651,12 +655,14 @@ contains
        varname = 'salt'
     else if (trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM') then
        varname = 'temp'
+#if defined BIORAN       
     else if (trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL') then
        varname = 'chla'
     else if (trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT') then
        varname = 'ntra'
     else if (trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY') then
        varname = 'doxy'
+#endif       
     else
        varname = trim(obstag)
     end if
