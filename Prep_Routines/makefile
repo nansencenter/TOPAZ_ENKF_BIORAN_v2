@@ -46,6 +46,7 @@ m_read_amsr_norsex.F90\
 m_read_metno_icec.F90\
 m_read_SMOS_HICE.F90\
 m_read_jpl_hice.F90\
+m_read_BGC_bottle.o\
 m_superobs.F90\
 m_uobs.F90\
 m_write_wet_file.F90\
@@ -78,6 +79,8 @@ m_bilincoeff.o: m_oldtonew.o
 m_get_def_wet_point.o: m_pivotp.o m_confmap.o m_spherdist.o mod_measurement.o mod_grid.o
 m_get_mod_grid.o: mod_raw_io.o
 m_get_mod_cnfg.o: mod_raw_io.o m_io_hycom.o
+m_read_BGC_bottle.o: m_get_mod_cnfg.o
+m_read_CMEMS_CORA.o: m_get_mod_cnfg.o
 m_read_CERSAT_data.o: nfw.o
 m_read_CLS_TSLA.o: nfw.o
 m_read_MYO_TSLA.o: nfw.o
@@ -85,6 +88,7 @@ m_read_CMEMS_grid.o: nfw.o
 m_read_ESACCI_grid.o: nfw.o
 p_prep_obs.o: m_uobs.o
 m_uobs.o: qmpi.o
+m_get_mod_cnfg.o: qmpi.o mod_raw_io.o m_io_hycom.o
 
 chk_obs: $(CHK_OBS_OBJ)
 	@echo "->chk_obs"

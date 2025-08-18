@@ -77,5 +77,5 @@ clean:
 
 %.o: %.c
 	@echo "  $*".c
-	@cd ./TMP ; mpiicc -c $(CFLAGS) -o $*.o -I.. ../$*.c
-#	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. ../$*.c
+#	@cd ./TMP ; mpiicc -c $(CFLAGS) -o $*.o -I.. ../$*.c
+	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. ../$*.c

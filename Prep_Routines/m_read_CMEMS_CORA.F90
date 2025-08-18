@@ -54,6 +54,7 @@ module m_read_CMEMS_CORA
     
   subroutine read_CMEMS_CORA(fname, obstype, variance, nx, ny, data, datainfo)
   use mod_measurement
+  use m_get_mod_cnfg
   use m_oldtonew
   use m_confmap
   use m_bilincoeff
@@ -85,6 +86,7 @@ module m_read_CMEMS_CORA
 
   integer :: ngood, ndata
   real :: latnew, lonnew
+  real :: mindx, meandx
   real(8), dimension(nx,ny) :: modlat, modlon
   real(8), dimension(nx,ny) :: depths
 
@@ -164,7 +166,8 @@ module m_read_CMEMS_CORA
 
   mask1d(:) = 1
   mask2d(:,:) = 1
-  call grid_readxyz(nx, ny, modlat, modlon, depths)
+  call get_mod_cnfg(modlon, modlat, depths, mindx, meandx, nx, ny, .false.)
+  !call grid_readxyz(nx, ny, modlat, modlon, depths)
   
   ! time_qc
   where (time_qc /= 1) mask1d = 0

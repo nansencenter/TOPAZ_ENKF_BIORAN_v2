@@ -50,6 +50,7 @@ program p_prep_obs
   use m_read_jpl_hice
   use m_read_FFI_glider
   use m_read_metno_icec
+  use m_read_BGC_bottle
   use m_get_def_wet_point
   use m_write_wet_file
   use m_get_mod_grid
@@ -401,6 +402,13 @@ program p_prep_obs
      call read_FFI_glider(fname, obstype, var, nx, ny, data)
      data_eq_obs = .true.
 
+  elseif (trim(producer) == 'BGC') then
+
+     dosuperob = .true.
+     is3d = .false.
+     call read_bgc_bottle(fname, obstype, nx, ny, data)
+     data_eq_obs = .true.
+     
   elseif (trim(producer) == 'MYO') then
 
     if (trim(obstype) == 'TSLA') then

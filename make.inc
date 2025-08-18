@@ -1,1 +1,1 @@
-Config/make.betzy
+Config/make.betzy.openmpi
