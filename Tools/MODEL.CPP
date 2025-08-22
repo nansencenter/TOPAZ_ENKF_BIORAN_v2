@@ -1,3 +1,4 @@
+#define ECO
 #define ICE
 #define TOPAZ 
 #define SINGLE_RESTART

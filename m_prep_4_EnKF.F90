@@ -25,8 +25,13 @@ module m_prep_4_EnKF
 
   integer, parameter, private :: STRLEN = 512
 
-  private read_mean_ssh
+  private :: read_mean_ssh
 
+#if defined HYCOM_BIO
+  ! default settings of BGC Box-Cox transformation
+  !
+  logical, private :: lognormal = .true.
+#endif  
 contains
 
   ! This subroutine uses the observation and ensembles from the model
@@ -72,6 +77,11 @@ contains
     real*4, dimension(nx,ny) :: fldr4
     real*8, dimension(nx,ny) :: fldr8
     real :: readfld(nx, ny)
+#if defined HYCOM_BIO
+    real :: readfld_flac(nx, ny)
+    real :: readfld_diac(nx, ny)
+    real :: readfld_cclc(nx, ny)
+#endif    
     real :: readfld2(nx, ny)
 
     ! hard-coded for now
@@ -255,6 +265,53 @@ contains
                   readfld, depths, nx, ny, nz, 0) 
           end do
 
+#if defined HYCOM_BIO
+       elseif (trim(unique_obs(iuobs)) == 'SCHL') then
+          do iens = 1, nrens
+             write(cmem,'(i3.3)') iens
+             tlevel = 1
+             call get_mod_fld_new(trim('forecast'//cmem), readfld_flac, iens,&
+                  'ECO_flac', 1, tlevel, nx, ny,0)
+             if (tlevel == -1) then
+                if (master) then
+                   print *, 'ERROR: get_mod_fld_new(): failed for "ECO_flac"'
+                end if
+                stop
+             end if
+             call get_mod_fld_new(trim('forecast'//cmem), readfld_diac, iens,&
+                  'ECO_diac', 1, tlevel, nx, ny,0)
+             if (tlevel == -1) then
+                if (master) then
+                   print *, 'ERROR: get_mod_fld_new(): failed for "ECO_diac"'
+                end if
+                stop
+             end if
+             call get_mod_fld_new(trim('forecast'//cmem), readfld_cclc, iens,&
+                  'ECO_cclc', 1, tlevel, nx, ny,0)
+             if (tlevel == -1) then
+                if (master) then
+                   print *, 'ERROR: get_mod_fld_new(): failed for "ECO_cclc"'
+                end if
+                stop
+             end if
+             if (lognormal) then
+                ! Inverse Box-Cox transformation (IBCT).
+                ! [2019.08.20] TW
+                !   So far, only the case: lambda=0 (Log-Normal transformation) is available.
+                readfld = exp(readfld_flac) + exp(readfld_diac) + exp(readfld_cclc)
+                ! Forward Box-Cox transformation (FBCT). See m_put_mod_fld.F90 for the Inverse BCT (IBCT).
+                ! [2019.08.20] TW
+                !   So far, only the case: lambda=0 (Log-Normal transformation) is available.
+                readfld = log(readfld)
+             else
+                readfld = readfld_flac + readfld_diac + readfld_cclc
+             endif
+
+             call Generate_element_Si(S(:, iens), unique_obs(iuobs),&
+                  readfld, depths, nx, ny, nz, 0) 
+          end do
+
+#endif          
        elseif (trim(unique_obs(iuobs)) == 'SLA' .or. trim(unique_obs(iuobs)) == 'TSLA') then
 
           if (trim(unique_obs(iuobs)) == 'TSLA') then
@@ -326,10 +383,9 @@ contains
            .or. trim(unique_obs(iuobs)) == 'TEM'  &
            .or. trim(unique_obs(iuobs)) == 'GSAL' &
            .or. trim(unique_obs(iuobs)) == 'GTEM' &
-#if defined BIORAN
+#if defined HYCOM_BIO
            .or. trim(unique_obs(iuobs)) == 'CHL'  &
            .or. trim(unique_obs(iuobs)) == 'GCHL' &
-           .or. trim(unique_obs(iuobs)) == 'SCHL' &
            .or. trim(unique_obs(iuobs)) == 'OXY'  &
            .or. trim(unique_obs(iuobs)) == 'GOXY' &
            .or. trim(unique_obs(iuobs)) == 'NIT'  &
@@ -441,10 +497,9 @@ contains
           .or. trim(unique_obs(iuobs)) == 'TEM'  &
           .or. trim(unique_obs(iuobs)) == 'GSAL' &
           .or. trim(unique_obs(iuobs)) == 'GTEM' &
-#if defined BIORAN
+#if defined HYCOM_BIO
           .or. trim(unique_obs(iuobs)) == 'CHL'  &
           .or. trim(unique_obs(iuobs)) == 'GCHL' &
-          .or. trim(unique_obs(iuobs)) == 'SCHL' &
           .or. trim(unique_obs(iuobs)) == 'OXY'  &
           .or. trim(unique_obs(iuobs)) == 'GOXY' &
           .or. trim(unique_obs(iuobs)) == 'NIT'  &

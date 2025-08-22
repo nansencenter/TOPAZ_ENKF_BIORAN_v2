@@ -90,22 +90,27 @@ module m_obs
   real, parameter, private :: HICE_MAX = 5.99d0
   real, parameter, private :: SKIM_MIN = -2.0d5
   real, parameter, private :: SKIM_MAX = 2.0d5
-#if defined BIORAN
+#if defined HYCOM_BIO
   ! BGC variables
   !
   real, parameter, private :: CHL_MIN =  0.0d0
   real, parameter, private :: CHL_MAX = 20.0d0
   real, parameter, private :: NIT_MIN =  0.0d0*12.01*6.625
-  real, parameter, private :: NIT_MAX = 20.0d0*12.01*6.625
+  real, parameter, private :: NIT_MAX = 40.0d0*12.01*6.625
   real, parameter, private :: SIL_MIN =  0.0d0*12.01*6.625
-  real, parameter, private :: SIL_MAX = 20.0d0*12.01*6.625
+  real, parameter, private :: SIL_MAX = 40.0d0*12.01*6.625
   real, parameter, private :: PHO_MIN =  0.0d0*12.01*106.0
-  real, parameter, private :: PHO_MAX = 10.0d0*12.01*106.0
+  real, parameter, private :: PHO_MAX = 20.0d0*12.01*106.0
   real, parameter, private :: OXY_MIN =  0.0d0
   real, parameter, private :: OXY_MAX = 30.0d0
 #endif
-  private obs_prepareuobs, obs_realloc
+  private :: obs_prepareuobs, obs_realloc
 
+#if defined HYCOM_BIO
+  ! default settings of BGC Box-Cox transformation
+  !
+  logical, parameter, private :: lognormal = .true.
+#endif  
 contains
 
   ! Obtain observations to be used for assimilation from the file
@@ -121,11 +126,6 @@ contains
     integer :: ios
     integer :: o
     real :: obsd, obsvar
-#if defined BIORAN
-    ! default settings of BGC Box-Cox transformation
-    !
-    logical :: lognormal = .true.
-#endif  
 
     if (nobs >= 0) then
        return
@@ -169,7 +169,7 @@ contains
     do o = 1, nobs
        read(10, rec = o) obs(o)
 
-#if defined BIORAN
+#if defined HYCOM_BIO
        ! Nonlinear transformation of BGC variables to normal distribution
        !
        if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
@@ -205,11 +205,6 @@ contains
   subroutine obs_testrange
     integer :: o, uo, nbad
     real :: dmin, dmax
-#if defined BIORAN
-    ! default settings of BGC Box-Cox transformation
-    !
-    logical :: lognormal = .true.
-#endif  
        
     if (master) then
        print '(a)', ' EnKF: testing range for each type of obs '
@@ -248,26 +243,56 @@ contains
           ! The type can be DX1,DX2,..,DX5,DY1,..DY5
           dmin = UVICE_MIN
           dmax = UVICE_MAX
-#if defined BIORAN
+#if defined HYCOM_BIO
        elseif (trim(unique_obs(uo)) == 'CHL'  &
           .or. trim(unique_obs(uo)) == 'GCHL' &
           .or. trim(unique_obs(uo)) == 'SCHL') then
           dmin = CHL_MIN
           dmax = CHL_MAX
+          ! Forward Box-Cox transformation (FBCT).
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
        elseif (trim(unique_obs(uo)) == 'OXY'  &
           .or. trim(unique_obs(uo)) == 'GOXY') then
           dmin = OXY_MIN
           dmax = OXY_MAX
+          ! Forward Box-Cox transformation (FBCT).
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
        elseif (trim(unique_obs(uo)) == 'NIT'  &
           .or. trim(unique_obs(uo)) == 'GNIT') then
           dmin = NIT_MIN
           dmax = NIT_MAX
+          ! Forward Box-Cox transformation (FBCT).
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
        elseif (trim(unique_obs(uo)) == 'SIL' ) then
           dmin = SIL_MIN
           dmax = SIL_MAX
+          ! Forward Box-Cox transformation (FBCT).
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
        elseif (trim(unique_obs(uo)) == 'PHO' ) then
           dmin = PHO_MIN
           dmax = PHO_MAX
+          ! Forward Box-Cox transformation (FBCT).
+          ! lambda=0 (Log-Normal transformation)
+          if (lognormal) then
+            dmin = log(dmin)
+            dmax = log(dmax)
+          endif
 #endif
        else
           dmin = -1.0d6
@@ -276,23 +301,6 @@ contains
           stop
        end if
        
-#if defined BIORAN
-       ! Nonlinear transformation of BGC variables to normal distribution
-       !
-       if ( trim(obs(o) % id) == 'CHL' .or. trim(obs(o) % id) == 'GCHL' .or. trim(obs(o) % id) == 'SCHL' &
-       .or. trim(obs(o) % id) == 'OXY' .or. trim(obs(o) % id) == 'GOXY' &
-       .or. trim(obs(o) % id) == 'NIT' .or. trim(obs(o) % id) == 'GNIT' &
-       .or. trim(obs(o) % id) == 'SIL' &
-       .or. trim(obs(o) % id) == 'PHO' ) then
-          ! Forward Box-Cox transformation (FBCT).
-          ! lambda=0 (Log-Normal transformation)
-          if (lognormal) then
-            dmin = log(dmin)
-            dmax = log(dmax)
-          endif
-       endif
-#endif
-
        nbad = 0
        do o = uobs_begin(uo), uobs_end(uo)
           if (obs(o) % status .and.&
@@ -346,8 +354,8 @@ contains
 
     if  (trim(obstag) == 'SAL' .or. trim(obstag) == 'GSAL' &
     .or. trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM' & 
-#if defined BIORAN
-    .or. trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' .or. trim(obstag) == 'SCHL' & 
+#if defined HYCOM_BIO
+    .or. trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' & 
     .or. trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY' & 
     .or. trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT' & 
     .or. trim(obstag) == 'SIL' &

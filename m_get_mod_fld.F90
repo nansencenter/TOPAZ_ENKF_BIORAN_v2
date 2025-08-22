@@ -2,10 +2,10 @@ module m_get_mod_fld
 ! KAL -- This routine reads one of the fields from the model, specified
 ! KAL -- by name, vertical level and time level 
 ! KAL -- This routine is really only effective for the new restart files.
-#if defined BIORAN
+#if defined HYCOM_BIO
   ! default settings of BGC Box-Cox transformation
   !
-  logical :: lognormal = .true.
+  logical, parameter, private :: lognormal = .true.
 #endif  
 contains
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +163,7 @@ subroutine get_mod_fld_new(memfile,fld,iens,cfld0,vlevel,tlevel,nx,ny,Indfield)
         print *,'node ',qmpi_proc_num
         call exit(1)
      end if
-#if defined(BIORAN)
+#if defined HYCOM_BIO
      if (lognormal) then
         !
         ! [2019.10.04] TW

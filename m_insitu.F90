@@ -225,7 +225,7 @@ contains
     ! for glider data - sort observations in each profile by increasing depth
     !
     if ( trim(obstag) == 'GSAL' .or. trim(obstag) == 'GTEM' &
-#if defined BIORAN
+#if defined HYCOM_BIO
     .or. trim(obstag) == 'GNIT' .or. trim(obstag) == 'GCHL' &
     .or. trim(obstag) == 'GOXY' &
 #endif    
@@ -401,7 +401,7 @@ contains
     !
     if (  trim(obstag) /= 'SAL' .and. trim(obstag) /= 'GSAL' &
     .and. trim(obstag) /= 'TEM' .and. trim(obstag) /= 'GTEM' &
-#if defined BIORAN         
+#if defined HYCOM_BIO
     .and. trim(obstag) /= 'CHL' .and. trim(obstag) /= 'GCHL' &
     .and. trim(obstag) /= 'NIT' .and. trim(obstag) /= 'GNIT' &
     .and. trim(obstag) /= 'OXY' .and. trim(obstag) /= 'GOXY' &
@@ -655,7 +655,7 @@ contains
        varname = 'salt'
     else if (trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM') then
        varname = 'temp'
-#if defined BIORAN       
+#if defined HYCOM_BIO
     else if (trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL') then
        varname = 'chla'
     else if (trim(obstag) == 'NIT' .or. trim(obstag) == 'GNIT') then

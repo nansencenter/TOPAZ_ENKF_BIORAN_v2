@@ -158,7 +158,9 @@ program EnKF
 
    ! initialise point output
    !
+#ifndef DISABLE_P2NC
    call p2nc_init
+#endif   
 
    time0 = rtc()
 
@@ -256,7 +258,9 @@ program EnKF
             fld(:, ENSSIZE * (m - m1) + k) = reshape(readfld, (/idm * jdm/))
          end do
    
+#ifndef DISABLE_P2NC
          call p2nc_storeforecast(idm, jdm, ENSSIZE, numfields, m, fld(:, ENSSIZE * (m - m1) + 1 : ENSSIZE * (m + 1 - m1)))
+#endif         
          infls(m - m1 + 1) = prm_getinfl(trim(fieldnames(m)));
       end do
 
@@ -282,7 +286,9 @@ program EnKF
    deallocate(X5)
    deallocate(fld)
 
+#ifndef DISABLE_P2NC
    call p2nc_writeforecast
+#endif   
 
    ! Barrier only necessary for timings
 #if defined(QMPI)

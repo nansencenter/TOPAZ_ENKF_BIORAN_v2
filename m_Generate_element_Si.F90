@@ -7,37 +7,37 @@ module m_Generate_element_Si
   integer, parameter, private :: NONE = 0
   integer, parameter, private :: TEMPERATURE = 1
   integer, parameter, private :: SALINITY = 2
-#if defined BIORAN
-  integer, parameter, private :: NITRATE     = 3
-  integer, parameter, private :: SILICATE    = 4
-  integer, parameter, private :: PHOSPHATE   = 5
-  integer, parameter, private :: OXYGEN      = 6
-  integer, parameter, private :: CHLOROPHYLL = 7
+#if defined HYCOM_BIO
+  integer, parameter, private :: CHLOROPHYLL = 3
+  integer, parameter, private :: NITRATE     = 4
+  integer, parameter, private :: SILICATE    = 5
+  integer, parameter, private :: PHOSPHATE   = 6
+  integer, parameter, private :: OXYGEN      = 7
 #endif
 
   real, parameter, private :: TEM_MIN = -2.5
   real, parameter, private :: TEM_MAX = 35.0
   real, parameter, private :: SAL_MIN = 5.0
   real, parameter, private :: SAL_MAX = 41.0
-#if defined BIORAN
+#if defined HYCOM_BIO
   real, parameter, private :: CHL_MIN =   0.0d0
   real, parameter, private :: CHL_MAX =  20.0d0
   real, parameter, private :: NIT_MIN =   0.0d0*12.01*6.625
-  real, parameter, private :: NIT_MAX =  20.0d0*12.01*6.625
+  real, parameter, private :: NIT_MAX =  40.0d0*12.01*6.625
   real, parameter, private :: SIL_MIN =   0.0d0*12.01*6.625
-  real, parameter, private :: SIL_MAX =  20.0d0*12.01*6.625
+  real, parameter, private :: SIL_MAX =  40.0d0*12.01*6.625
   real, parameter, private :: PHO_MIN =   0.0d0*12.01*106.0
-  real, parameter, private :: PHO_MAX =  10.0d0*12.01*106.0
+  real, parameter, private :: PHO_MAX =  20.0d0*12.01*106.0
   real, parameter, private :: OXY_MIN =   0.0d0
   real, parameter, private :: OXY_MAX =  30.0d0
 #endif
   
   logical, parameter, private :: VERT_INTERP_GRID = .true.
 
-#if defined BIORAN
+#if defined HYCOM_BIO
   ! default settings of BGC Box-Cox transformation
   !
-  logical :: lognormal = .true.
+  logical, parameter, private :: lognormal = .true.
 #endif  
 
 contains
@@ -184,7 +184,7 @@ contains
     ! fields & I/O stuff
     !
     real, allocatable, dimension(:, :) :: dz2d, v2d, sstbias, mld, offset, z
-#if defined BIORAN    
+#if defined HYCOM_BIO
     real, allocatable, dimension(:, :) :: v2d_flac, v2d_diac, v2d_cclc
 #endif    
     integer :: tlevel
@@ -257,7 +257,11 @@ contains
     call parse_blkdat('jdm   ','integer', rdummy, nj)
     call parse_blkdat('kdm   ','integer', rdummy, nk)
 
-    allocate(v2d(ni, nj))
+#if defined HYCOM_BIO
+    allocate(v2d_flac(ni, nj))
+    allocate(v2d_diac(ni, nj))
+    allocate(v2d_cclc(ni, nj))
+#endif    
     allocate(dz2d(ni, nj))
 
     if (trim(obstag) == 'SAL' .or. trim(obstag) == 'GSAL') then
@@ -266,8 +270,8 @@ contains
     elseif (trim(obstag) == 'TEM' .or. trim(obstag) == 'GTEM') then
        fieldtag = 'temp    '
        field = TEMPERATURE
-#if defined BIORAN
-    elseif (trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' .or. trim(obstag) == 'SCHL') then
+#if defined HYCOM_BIO
+    elseif (trim(obstag) == 'CHL' .or. trim(obstag) == 'GCHL' ) then
        fieldtag = 'chloro'
        field = CHLOROPHYLL
     elseif (trim(obstag) == 'OXY' .or. trim(obstag) == 'GOXY' ) then
@@ -338,16 +342,16 @@ contains
              stop
           end if
 
-#if defined BIORAN
+#if defined HYCOM_BIO
           !
           ! total Chlorophyll
           !
           if(fieldtag == 'chloro') then
-             !call get_mod_fld_new(trim(fname), v2d_flac, iens, 'ECO_flac', k, tlevel, ni, nj) ! Flagellate
-             !call get_mod_fld_new(trim(fname), v2d_diac, iens, 'ECO_diac', k, tlevel, ni, nj) ! Diatom
-             !call get_mod_fld_new(trim(fname), v2d_cclc, iens, 'ECO_cclc', k, tlevel, ni, nj) ! Coccolith
+             call get_mod_fld_new(trim(fname), v2d_flac, iens, 'ECO_flac', k, tlevel, ni, nj,1) ! Flagellate
+             call get_mod_fld_new(trim(fname), v2d_diac, iens, 'ECO_diac', k, tlevel, ni, nj,1) ! Diatom
+             call get_mod_fld_new(trim(fname), v2d_cclc, iens, 'ECO_cclc', k, tlevel, ni, nj,1) ! Coccolith
              ! [2019.08.20] TW
-             !   Since total chlorophyll (chloro) = CHLDIA + CHLFLG, we need to apply IBCT to make the sum
+             !   Since total chlorophyll (chloro) = ECO_flac + ECO_diac + ECO_cclc, we need to apply IBCT to make the sum
              !   and put it back to log-normal space with FBCT after.
              if (lognormal) then 
                 ! Inverse Box-Cox transformation (IBCT).
@@ -462,7 +466,15 @@ contains
                            'iens =', iens, ', obs =', o, ', profile = ', p,&
                            'depth =', depth, ', S =', S(o)
                    end if
-#if defined BIORAN
+#if defined BGC
+                else if (field == CHLOROPHYLL) then
+                   if ((S(o) < CHL_MIN .or. S(o) > CHL_MAX) .and. master) then
+                      print *, 'WARNING: get_S(): suspicious value (CHL): ',&
+                           'iens =', iens, ', obs =', o, ', profile = ', p,&
+                           'depth =', depth, ', S =', S(o)
+                   end if
+#endif
+#if defined HYCOM_BIO
                 else if (field == NITRATE) then
                    if (lognormal) then
                       if ((S(o) < log(NIT_MIN) .or. S(o) > log(NIT_MAX)) .and. master) then
@@ -550,9 +562,10 @@ contains
 
     deallocate(dz2d)
     deallocate(v2d)
-#if defined BIORAN    
+#if defined HYCOM_BIO    
     deallocate(v2d_flac)
     deallocate(v2d_diac)
+    deallocate(v2d_cclc)
 #endif    
     deallocate(v_prev)
     deallocate(v)

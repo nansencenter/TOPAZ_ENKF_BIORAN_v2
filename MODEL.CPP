@@ -6,4 +6,5 @@
 #undef CHECK_SOLUTION
 #undef X4SVD
 #define HYCOM_CICE 
-#define BIORAN
+#define HYCOM_BIO
+#define DISABLE_P2NC

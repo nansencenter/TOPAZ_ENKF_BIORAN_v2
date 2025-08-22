@@ -4,10 +4,10 @@ module m_put_mod_fld
 ! KAL -- Its a bit dangerous to use -- indx must be updated correctly (max one 
 ! KAL -- increment per call of this routine), otherwise there wil be a 
 ! KAL -- inconsistency between .a and .b files
-#if defined BIORAN
+#if defined HYCOM_BIO
   ! default settings of BGC Box-Cox transformation
   !
-  logical :: lognormal = .true.
+  logical, parameter, private :: lognormal = .true.
 #endif  
 contains
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +34,7 @@ subroutine put_mod_fld(memfile,fld,iens,cfld,vlevel,tlevel,indx,nx,ny)
 
    spval=2**100
 
-#if defined BIORAN
+#if defined HYCOM_BIO
    if (lognormal) then
       !
       ! [2019.10.04] TW

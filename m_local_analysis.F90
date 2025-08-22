@@ -426,12 +426,14 @@ contains
        !print *, 'calc_X5(): jj =', jj, 'j =', j
 
        do i = 1, ni
+#ifndef DISABLE_P2NC
           ! data dumping flag
           testthiscell = p2nc_testthiscell(i, j)
 
           if (testthiscell) then
              print *, 'testthiscell: depth(,', i, ',', j, ') =', depths(i, j)
           end if
+#endif          
 
           if (depths(i, j) > 0.0d0) then
              nlobs = 0 ! no upper limit on the number of local observations
@@ -454,12 +456,14 @@ contains
                 X5(m, m, i) = 1.0
                 X5tmp(m, m) = 1.0d0
              enddo
+#ifndef DISABLE_P2NC
              if (testthiscell) then
                 tmp(1) = rfactor
                 call p2nc_writeobs(i, j, nlobs, nrens, X5tmp, modlon(i, j),&
                      modlat(i, j), depths(i, j), tmp(1), lobs(1 : nlobs), &
                      obs(lobs(1 : nlobs)), x, subS, subdy, lfactors)
              end if
+#endif
              dfs_array(i, j) = 0.0
              pdfs_array(i, j, :) = 0.0
              srf_array(i, j) = 0.0
@@ -653,6 +657,7 @@ contains
              X5tmp(m, m) = X5tmp(m, m) + 1.0d0
           enddo
 
+#ifndef DISABLE_P2NC
           if (testthiscell) then
              ! ensemble mean
              allocate(x(nlobs))
@@ -665,7 +670,8 @@ contains
                   obs(lobs(1 : nlobs)), x, subS, subdy, lfactors)
              deallocate(x)
           end if
-
+#endif
+          
           ! Put X5tmp into the final X5 matrix - to be written to a file
           !
           X5(:, :, i) = real(X5tmp, 4)
