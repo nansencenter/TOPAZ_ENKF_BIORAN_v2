@@ -19,3 +19,10 @@ Tools/fixhycom
 Tools/fixhycom_eco
 Tools/obsstats
 Tools/oldtonewobs
+Tools_eco/consistency
+Tools_eco/checkice
+Tools_eco/checkice_en
+Tools_eco/fixhycom
+Tools_eco/fixhycom_eco
+Tools_eco/obsstats
+Tools_eco/oldtonewobs
