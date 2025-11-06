@@ -207,8 +207,6 @@ program fixhycom_eco
         end if
     end do
 
-    print *,'Number of 3D tracers:', ntracr
-
 
     ! We do the same loop, but this time we have stored "ntracr" which is the
     ! number of biogeochemistry state variables. The following will store the
@@ -238,11 +236,6 @@ program fixhycom_eco
         end if
     end do
 
-    print *,'List of 3D tracers:'
-    do ktrcr=1,ntracr
-       cfld=varnames(ktrcr) !'tracer'//ctrcr
-       print *,'  ',cfld
-    enddo
 
     close(10)
 
@@ -262,8 +255,7 @@ program fixhycom_eco
 !
 !#if defined (ECO)
    !files where are stored the forecast fields!
-   !restfor='forecast'//cmem
-   restfor=restart(1:fnd-1)
+   restfor='forecast'//cmem
    dpthin = onem*0.001
 #endif
 

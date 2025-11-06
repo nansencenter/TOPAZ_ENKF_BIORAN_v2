@@ -12,3 +12,10 @@ TMP
 *~
 Prep_Routines/chk_obs
 Prep_Routines/prep_obs
+Tools/consistency
+Tools/checkice
+Tools/checkice_en
+Tools/fixhycom
+Tools/fixhycom_eco
+Tools/obsstats
+Tools/oldtonewobs
